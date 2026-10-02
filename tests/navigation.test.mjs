@@ -1,7 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createWorkbenchNavigation, readNavigationContext } from '../src/workbenchNavigation.js';
-import { commercialOutputKey, commercialText } from '../src/commercialFreshness.js';
 
 const settle = () => new Promise(resolve => setImmediate(resolve));
 function browser() {
@@ -15,26 +14,26 @@ function browser() {
   };
   return { history, addEventListener(_, fn) { listeners.add(fn); }, removeEventListener(_, fn) { listeners.delete(fn); } };
 }
-test('project → quote → browser back/forward preserves project, quote tab and origin filters', async () => {
+test('project → knowledge → browser back/forward preserves project, source context and origin filters', async () => {
   const win = browser(), visits = []; let snapshot = { overview: 'customer A', scroll: 320 };
   const nav = createWorkbenchNavigation({ window: win, initial: { view: 'projects', projectId: '' }, canLeave: () => true, apply: (r, s) => visits.push([r, s]), capture: () => snapshot });
   nav.push({ view: 'projects', projectId: 'A' });
   snapshot = { overview: 'customer A', scroll: 410 };
-  nav.push({ view: 'pricing', projectId: 'A', pricingTab: 'approval' });
+  nav.push({ view: 'knowledge', projectId: 'A', sourcePath: 'demo.md' });
   nav.back(); await settle();
   assert.equal(visits.at(-1)[0].projectId, 'A'); assert.equal(visits.at(-1)[0].view, 'projects'); assert.equal(visits.at(-1)[1].scroll, 410);
   nav.back(); await settle();
   assert.equal(visits.at(-1)[0].projectId, ''); assert.equal(visits.at(-1)[1].overview, 'customer A');
   win.history.forward(); await settle(); win.history.forward(); await settle();
-  assert.equal(visits.at(-1)[0].pricingTab, 'approval');
+  assert.equal(visits.at(-1)[0].sourcePath, 'demo.md');
   nav.destroy();
 });
 test('cancel back preserves current history and inputs; discard later reaches exact previous entry', async () => {
   const win = browser(), visits = []; let answer;
   const nav = createWorkbenchNavigation({ window: win, initial: { view: 'projects' }, canLeave: () => new Promise(resolve => { answer = resolve; }), apply: r => visits.push(r) });
-  nav.push({ view: 'pricing', projectId: 'A' });
+  nav.push({ view: 'knowledge', projectId: 'A' });
   nav.back(); await settle();
-  assert.equal(readNavigationContext(null, win.history).view, 'pricing'); assert.equal(visits.length, 0);
+  assert.equal(readNavigationContext(null, win.history).view, 'knowledge'); assert.equal(visits.length, 0);
   assert.equal(nav.push({ view: 'discover' }), false);
   answer(false); await settle(); assert.equal(visits.length, 0);
   nav.back(); await settle(); answer(true); await settle();
@@ -44,10 +43,4 @@ test('cancel back preserves current history and inputs; discard later reaches ex
 test('reload reads the actual browser entry rather than a newer session context', () => {
   const win = browser(); const nav = createWorkbenchNavigation({ window: win, initial: { view: 'projects', projectId: 'A' }, canLeave: () => true, apply: () => {} });
   assert.equal(readNavigationContext({ getItem: () => '{"view":"pricing"}' }, win.history).projectId, 'A'); nav.destroy();
-});
-test('commercial output identity changes on source, confirmation and contact boundary; customer text excludes internal copy', () => {
-  const initial = { draft: { confirmation_fingerprint: 'old' }, approval_ready: true, contact_blocked: false, internal_approval: '内部成本 45000', customer_email: { subject: '确认报价', body: '报价 73000' } };
-  for (const patch of [{ draft: { confirmation_fingerprint: 'new' } }, { approval_ready: false }, { contact_blocked: true }, { internal_approval: '待核实' }]) assert.notEqual(commercialOutputKey(initial), commercialOutputKey({ ...initial, ...patch }));
-  assert.equal(commercialText({ ...initial, contact_blocked: true }, 'customer'), '');
-  assert.equal(commercialText(initial, 'customer').includes('45000'), false);
 });

@@ -48,17 +48,7 @@
 .source-reader header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .source-reader pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.9; max-height: 65vh; overflow: auto; }
 .source-reader > p { overflow-wrap: anywhere; }
-.commercial-workspace { max-width: 1120px; margin-inline: auto; }
-.commercial-workspace .performance-surface { padding: 24px; }
-.commercial-workspace button, .qualification-form button { border: 1px solid var(--app-border-strong); padding: 10px 14px; margin: 4px 8px 4px 0; border-radius: 7px; background: var(--app-surface-raised); color: var(--app-text); cursor: pointer; }
-.commercial-workspace button:hover { border-color: var(--app-accent); }
-.commercial-workspace button:disabled { opacity: .5; cursor: wait; }
-.commercial-workspace .form-footer { margin: 20px 0; }
-.commercial-workspace .pricing-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.commercial-workspace textarea { resize: vertical; }
-.commercial-workspace h2 { margin-top: 24px; }
-.legacy-calculator { max-width: 1120px; margin: 28px auto; padding: 20px; border-top: 1px solid var(--app-border); }
-.legacy-calculator > summary { cursor: pointer; margin-bottom: 16px; color: var(--app-text-muted); }
+.qualification-form button { border: 1px solid var(--app-border-strong); padding: 10px 14px; margin: 4px 8px 4px 0; border-radius: 7px; background: var(--app-surface-raised); color: var(--app-text); cursor: pointer; }
 .discovery-list { display: grid; gap: 12px; }
 .discovery-list .project-card > p { min-height: 0; }
 .qualification-form { display: grid; gap: 18px; }
@@ -66,15 +56,6 @@
 .qualification-form a { color: var(--app-accent); }
 .workspace-shortcuts button[aria-pressed=true] { background: var(--app-accent); color: var(--app-accent-ink); }
 @media(max-width: 760px) {
-  .commercial-workspace .pricing-form { grid-template-columns: minmax(0, 1fr); }
-  .commercial-workspace .performance-surface { padding: 16px; }
-  .commercial-workspace .metric-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .commercial-workspace .metric-strip > div { min-width: 0; overflow-wrap: anywhere; }
-  .commercial-workspace .metric-strip > div { padding: 14px; }
-  .legacy-calculator .pricing-result { min-width: 0; padding: 16px; }
-  .legacy-calculator .pricing-surface, .legacy-calculator .pricing-form { grid-template-columns: minmax(0, 1fr); }
-  .pricing-result dl > div { flex-wrap: wrap; gap: 8px; }
-  .pricing-result dd { margin-left: 0; overflow-wrap: anywhere; }
   .project-list, .project-action-form { grid-template-columns: minmax(0, 1fr); }
   .project-card, .project-judgement { padding: 18px; }
 }
@@ -419,7 +400,6 @@ p {
 .section-heading p,
 .account-action-bar p,
 .advance-section p,
-.capture-dialog header p,
 .report-reader header p {
   margin-bottom: 4px;
   color: var(--app-accent-strong);
@@ -477,8 +457,6 @@ p {
 .queue-surface,
 .pipeline-surface,
 .reminder-surface,
-.performance-surface,
-.pricing-surface,
 .decision-surface {
   border: 1px solid var(--app-border);
   border-radius: var(--radius-md);
@@ -875,9 +853,7 @@ p {
 }
 
 .native-field input,
-.native-field select,
-.pricing-form input,
-.pricing-form select {
+.native-field select {
   width: 100%;
   min-height: 44px;
   padding: 9px 11px;
@@ -1891,11 +1867,6 @@ p {
   padding-left: 20px;
 }
 
-.performance-surface,
-.pricing-surface {
-  padding: var(--space-xl);
-}
-
 .snapshot-warning {
   padding: 0 0 var(--space-xl);
 }
@@ -1945,138 +1916,6 @@ p {
 
 .signed-orders > div strong {
   text-align: right;
-}
-
-.pricing-surface {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
-  gap: var(--space-2xl);
-}
-
-.pricing-form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-content: start;
-  gap: var(--space-lg);
-}
-
-.pricing-form .check-field {
-  grid-column: 1 / -1;
-}
-
-.pricing-result {
-  display: grid;
-  align-content: start;
-  gap: var(--space-sm);
-  padding: var(--space-xl);
-  border: 1px solid var(--app-border-strong);
-  border-radius: var(--radius-md);
-  background: var(--app-surface-raised);
-}
-
-.pricing-result h2 {
-  margin-top: 12px;
-  font-size: 28px;
-}
-
-.pricing-result > p {
-  color: var(--app-text-muted);
-}
-
-.pricing-result dl {
-  display: grid;
-  margin-top: var(--space-xl);
-}
-
-.pricing-result dl > div {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-lg);
-  padding: 9px 0;
-  border-top: 1px solid var(--app-border);
-}
-
-.pricing-result dt {
-  color: var(--app-text-muted);
-}
-
-.capture-dialog {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  width: 100%;
-  height: min(680px, calc(100dvh - 96px));
-  max-height: none;
-  overflow: hidden;
-  background: var(--app-surface);
-  color: var(--app-text);
-}
-
-.capture-dialog > header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-xl);
-  padding: var(--space-xl);
-  border-bottom: 1px solid var(--app-border);
-}
-
-.capture-dialog > header h2 {
-  font-size: 22px;
-}
-
-.capture-dialog > header span {
-  display: block;
-  max-width: 60ch;
-  margin-top: 5px;
-  color: var(--app-text-muted);
-}
-
-.capture-dialog > header button {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
-  place-items: center;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  cursor: pointer;
-}
-
-.capture-dialog > header button:hover {
-  background: var(--app-surface-soft);
-}
-
-.capture-dialog form {
-  display: grid;
-  min-height: 0;
-  grid-template-rows: minmax(0, 1fr) auto;
-  overflow: hidden;
-}
-
-.capture-form-body {
-  display: grid;
-  align-content: start;
-  gap: var(--space-lg);
-  min-height: 0;
-  padding: var(--space-xl);
-  overflow: auto;
-}
-
-.capture-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-lg);
-}
-
-.capture-dialog footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-sm);
-  padding: var(--space-md) var(--space-xl) var(--space-lg);
-  border-top: 1px solid var(--app-border);
-  background: var(--app-surface);
 }
 
 .toast {
@@ -2984,8 +2823,7 @@ p {
 
 .action-form,
 .inline-composer,
-.evidence-editor,
-.pricing-result {
+.evidence-editor {
   background: var(--app-surface);
 }
 
@@ -3873,15 +3711,9 @@ p {
 .project-detail-drawer[open] { display: grid; grid-template-rows: auto minmax(0,1fr); }
 .project-detail-drawer .drawer-body { height: auto; min-height: 0; overflow-anchor: none; }
 .project-leave-dialog { background: var(--app-surface-raised); color: var(--app-text); border-color: var(--app-border-strong); }
-.pricing-tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--app-border); padding-bottom: 10px; }
-.pricing-tabs button { border: 0; border-radius: 7px; padding: 8px 13px; background: transparent; color: var(--app-text-muted); font-size: 13px; cursor: pointer; }
-.pricing-tabs button[aria-selected=true] { color: var(--app-accent); background: var(--app-surface-raised); }
-.pricing-result.is-pending { border-color: var(--app-border); }
 .standalone-approval-header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
 .standalone-approval-header h2 { margin-top: 0; }.standalone-approval-header p { font-size: 12px; color: var(--app-text-muted); }
-.approval-confirmations { display: flex; flex-wrap: wrap; gap: 20px; margin: 12px 0; }
 .standalone-approval .native-field { margin-top: 12px; }.standalone-approval textarea { width: 100%; box-sizing: border-box; }
-.approval-ready { color: var(--app-accent); font-size: 12px; }
 @media (min-width: 1180px) { .project-overview { gap: 10px; }.project-overview-row { min-height: 66px; padding-block: 7px; }.project-overview-row p { line-height: 1.45; }.attention-tag { margin-top: 3px; }.project-overview .overview-heading h1 { font-size: 25px; } }
 /* Final density pass: four comparison columns and one compact heading row. */
 .overview-heading-compact { gap: 14px; min-height: 38px; }

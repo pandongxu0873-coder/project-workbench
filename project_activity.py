@@ -1,7 +1,6 @@
 """Read-through business context. Original owners remain the only writers."""
 import hashlib
 import json
-import quote_versions
 from pathlib import Path
 
 
@@ -73,17 +72,6 @@ def business_sources(project, state_root):
         rows.append({'path': 'local://action/' + hashlib.sha256(item['id'].encode()).hexdigest()[:20], 'date': '',
                      'recorded_at': item.get('created_at', ''), 'action_id': item['id'], 'truncated': False,
                      'content': '已存在的同项目行动。若下一步承接此事，引用本条；采纳时沿用此行动身份和原约定日期，不重复建待办。\n' + json.dumps({k: item.get(k) for k in ('id', 'title', 'status', 'action', 'next_step', 'deadline', 'resolution', 'evidence', 'internal_only')}, ensure_ascii=False)})
-    draft_path = state_root / 'commercial_drafts' / (project['id'] + '.json')
-    if draft_path.exists():
-        draft = read_store(draft_path, {})
-        if draft.get('project_id') != project['id'] or draft.get('project_source') != project['source_path']:
-            raise ValueError('商务草稿项目身份不一致，不能用于项目判断')
-        visible = {k: draft.get(k) for k in ('revision', 'requirement', 'effort', 'rate', 'version', 'quote_id', 'quote_revision', 'customer_confirmed', 'confirmation_source', 'confirmation_excerpt')}
-        if draft.get('quote_id'):
-            quote = quote_versions.read(state_root, draft['quote_id'])
-            visible.update(latest_quote_revision=quote['revision'], quote_outdated=quote['revision'] != draft.get('quote_revision'))
-        rows.append({'path': 'local://commercial-draft', 'date': '', 'recorded_at': draft.get('updated_at', ''),
-                     'content': '本机商务准备草稿，未发送、未审批、不是合同。确认勾选仅是用户核对记录，仍需对照本版本原客户回复；草稿不能证明客户接受或审批负责人批准。\n' + json.dumps(visible, ensure_ascii=False), 'truncated': False})
     return sorted(rows, key=lambda row: row['path'])
 
 

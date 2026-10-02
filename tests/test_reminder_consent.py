@@ -28,7 +28,7 @@ class ReminderConsentTest(unittest.TestCase):
     def test_once_only_and_no_overdue_replay_even_force(self):
         state = {"version": 1, "deliveries": []}
         rows = [copy.deepcopy(self.item)]
-        with patch.object(server, "FEISHU_REMINDER_ENABLED", True), patch.object(server, "load_feishu_reminder_delivery_state", return_value=state), patch.object(server, "save_feishu_reminder_delivery_state"), patch.object(server, "risk_todos_payload", side_effect=lambda: {"items": rows}), patch.object(server, "send_feishu_reminder_message", return_value={"ok": True, "message_id": "fixture-only"}) as send:
+        with patch.object(server, "FEISHU_REMINDER_CHAT_ID", "isolated-fixture-chat"), patch.object(server, "FEISHU_REMINDER_ENABLED", True), patch.object(server, "load_feishu_reminder_delivery_state", return_value=state), patch.object(server, "save_feishu_reminder_delivery_state"), patch.object(server, "risk_todos_payload", side_effect=lambda: {"items": rows}), patch.object(server, "send_feishu_reminder_message", return_value={"ok": True, "message_id": "fixture-only"}) as send:
             self.assertEqual(server.process_feishu_reminder_deliveries()["sent"], 1)
             self.assertEqual(server.process_feishu_reminder_deliveries()["sent"], 0)
             rows[0]["deadline"] = (self.now - timedelta(days=55)).isoformat()
@@ -38,7 +38,7 @@ class ReminderConsentTest(unittest.TestCase):
     def test_failed_retry_is_not_replayed_after_expiry(self):
         state = {"version": 1, "deliveries": []}
         rows = [copy.deepcopy(self.item)]
-        with patch.object(server, "FEISHU_REMINDER_ENABLED", True), patch.object(server, "load_feishu_reminder_delivery_state", return_value=state), patch.object(server, "save_feishu_reminder_delivery_state"), patch.object(server, "risk_todos_payload", side_effect=lambda: {"items": rows}), patch.object(server, "send_feishu_reminder_message", side_effect=RuntimeError("isolated failure")) as send:
+        with patch.object(server, "FEISHU_REMINDER_CHAT_ID", "isolated-fixture-chat"), patch.object(server, "FEISHU_REMINDER_ENABLED", True), patch.object(server, "load_feishu_reminder_delivery_state", return_value=state), patch.object(server, "save_feishu_reminder_delivery_state"), patch.object(server, "risk_todos_payload", side_effect=lambda: {"items": rows}), patch.object(server, "send_feishu_reminder_message", side_effect=RuntimeError("isolated failure")) as send:
             self.assertEqual(server.process_feishu_reminder_deliveries()["failed"], 1)
             rows[0]["deadline"] = (self.now - timedelta(minutes=1)).isoformat()
             self.assertEqual(server.process_feishu_reminder_deliveries(force_overdue=True)["sent"], 0)

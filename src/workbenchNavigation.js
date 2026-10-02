@@ -1,6 +1,8 @@
+const REMOVED_VIEWS = new Set(['customers','performance','pricing','reports','aihot','invoices']);
+const coreRoute = route => REMOVED_VIEWS.has(route?.view) ? {...route,view:'projects'} : route;
 const KEY = 'salesWorkbenchNavigation';
 export function readNavigationContext(storage, history) {
-  try { return history?.state?.[KEY]?.route || JSON.parse(storage.getItem('workbench-context')) || {}; }
+  try { return coreRoute(history?.state?.[KEY]?.route || JSON.parse(storage.getItem('workbench-context')) || {}); }
   catch { return {}; }
 }
 
@@ -13,7 +15,7 @@ export function createWorkbenchNavigation({ window: win, initial, canLeave, appl
   const write = (entry, replace = false) => win.history[replace ? 'replaceState' : 'pushState']({ ...win.history.state, [KEY]: entry }, '');
   write(current, true);
   const snapshot = () => { current = { ...current, snapshot: capture() }; write(current, true); };
-  const deliver = entry => { current = entry; apply(entry.route, entry.snapshot); };
+  const deliver = entry => { current = entry; apply(coreRoute(entry.route), entry.snapshot); };
   async function onPop(event) {
     if (disposed) return;
     const target = event.state?.[KEY];

@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {needsWorkbenchData,readProjectSnapshot,writeProjectSnapshot,PROJECT_SNAPSHOT_KEY} from '../src/workbenchStartup.js';
 function storage() { const values = new Map(); return {getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value)}; }
 test('independent pages do not require legacy sales aggregate; action pages do', () => {
- for (const view of ['projects','pricing','communications','knowledge','aihot','performance','today','discover']) assert.equal(needsWorkbenchData(view),false);
- for (const view of ['accounts','reminders','reports']) assert.equal(needsWorkbenchData(view),true);
+ for (const view of ['projects','agent','communications','knowledge','today','discover']) assert.equal(needsWorkbenchData(view),false);
+ for (const view of ['accounts','reminders']) assert.equal(needsWorkbenchData(view),true);
 });
 test('project snapshot is a bounded display copy without write revisions or source content', () => {
  const store=storage(); const now=100000;

@@ -151,12 +151,12 @@ def handle(h, root):
     if urlparse(h.path).path != '/api/project-notifications':
         return False
     from local_resources import guard, read_json
-    from invoice_vault import VaultError
+    from local_http import LocalError
     try:
         guard(h)
         result = acknowledge(root, read_json(h)) if h.command == 'POST' else listing(root)
         h._send_json(result)
-    except VaultError as e:
+    except LocalError as e:
         h._send_json({'ok': False, 'error': str(e)}, status=e.status)
     except (ValueError, TypeError):
         h._send_json({'ok': False, 'error': '消息版本无效，请刷新后重试'}, status=400)

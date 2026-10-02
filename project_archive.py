@@ -176,7 +176,7 @@ def handle(h,knowledge_root,root):
  path=urlparse(h.path).path
  if path!='/api/project-archive':return False
  from local_resources import guard,read_json
- from invoice_vault import VaultError
+ from local_http import LocalError
  from project_workspace import build_projects
  try:
   guard(h);projects=build_projects(knowledge_root,root)
@@ -187,7 +187,7 @@ def handle(h,knowledge_root,root):
   else:raise ValueError('不支持的方法')
   h._send_json(result)
  except ArchiveConflict as e:h._send_json({'ok':False,'error':str(e)},status=409)
- except VaultError as e:h._send_json({'ok':False,'error':str(e)},status=e.status)
+ except LocalError as e:h._send_json({'ok':False,'error':str(e)},status=e.status)
  except ValueError as e:h._send_json({'ok':False,'error':str(e)},status=400)
  except OSError:h._send_json({'ok':False,'error':'归档未保存，原记录保留'},status=500)
  return True

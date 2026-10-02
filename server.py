@@ -26,13 +26,11 @@ from urllib.parse import parse_qs, unquote, urlparse
 from zoneinfo import ZoneInfo
 from project_workspace import build_projects, save_plan, read_source
 from calendar_project_links import link_project_calendar_items
-import quote_versions
 import project_activity
 import project_rounds
 import k100_sync
 import project_analysis
 import legacy_crm_snapshot
-import commercial
 import discovery_handoff
 import discovery_workspace
 import material_library
@@ -40,7 +38,6 @@ import material_files
 import public_signal_hub
 import background_operations
 import communication_jobs
-import ai_hot
 import project_crm
 import project_archive
 import local_resources
@@ -9708,7 +9705,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         elif self.path.startswith("/assets/"):
             self.send_header("Cache-Control", "public, max-age=31536000, immutable")
         self.send_header("X-Content-Type-Options", "nosniff")
-        self.send_header("X-Frame-Options", "SAMEORIGIN" if (re.fullmatch(r"/api/invoice-assets/[a-f0-9]{64}/preview", urlparse(self.path).path) or urlparse(self.path).path=="/api/material-library/files/preview") else "DENY")
+        self.send_header("X-Frame-Options", "SAMEORIGIN" if (urlparse(self.path).path=="/api/material-library/files/preview") else "DENY")
         self.send_header("Referrer-Policy", "no-referrer")
         self.send_header("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
         self.send_header(
@@ -9810,20 +9807,6 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             except Exception:
                 self._send_json({'error':'公开信号暂时无法读取，历史记录保留'}, status=503)
             return
-        if urlparse(self.path).path == '/api/ai-hot':
-            if not self._trusted_origin():
-                self._send_json({'error': 'origin not allowed'}, status=403)
-                return
-            try:
-                query = parse_qs(urlparse(self.path).query)
-                self._send_json(ai_hot.read({key: values[0] for key, values in query.items()}, WORKBENCH_DATA_ROOT))
-            except ValueError as exc:
-                self._send_json({'error': str(exc)}, status=400)
-            except ai_hot.FeedError as exc:
-                self._send_json({'error': str(exc), 'code': exc.code}, status=503 if exc.status >= 500 else exc.status)
-            except OSError:
-                self._send_json({'error': '资讯缓存暂不可读，请稍后刷新'}, status=503)
-            return
         if urlparse(self.path).path == '/api/communication-sync':
             if not self._trusted_origin():self._send_json({'error':'origin not allowed'},status=403);return
             try:self._send_json(communication_jobs.status(WORKBENCH_DATA_ROOT,SALES_WORKBENCH_KNOWLEDGE_ROOT))
@@ -9837,12 +9820,6 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 self._send_json(project_analysis.progress_records(parse_qs(parsed.query).get('project_id',[''])[0], SALES_WORKBENCH_KNOWLEDGE_ROOT, WORKBENCH_DATA_ROOT))
             except (ValueError, OSError) as exc: self._send_json({'error':str(exc)}, status=400)
             return
-        if parsed.path == "/api/quotes":
-            try:
-                quote_id = parse_qs(parsed.query).get('quote_id', [''])[0]
-                self._send_json({'ok': True, **quote_versions.read(WORKBENCH_DATA_ROOT, quote_id)})
-            except ValueError as exc: self._send_json({'error': str(exc)}, status=400)
-            return
         if parsed.path == "/api/discovery/prepare":
             try:
                 query=parse_qs(parsed.query)
@@ -9852,21 +9829,11 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/discovery/notes":
             self._send_json({"ok": True, **discovery_workspace.load_notes(WORKBENCH_DATA_ROOT)})
             return
-        if parsed.path in {"/api/commercial/draft", "/api/project-workspace/source", "/api/messages/reports"}:
+        if parsed.path == "/api/project-workspace/source":
             try:
-                query = parse_qs(parsed.query)
-                if parsed.path == "/api/commercial/draft":
-                    result = commercial.get_draft(query.get("project_id", [""])[0], SALES_WORKBENCH_KNOWLEDGE_ROOT, WORKBENCH_DATA_ROOT)
-                elif parsed.path == "/api/project-workspace/source":
-                    result = read_source(query.get("project_id", [""])[0], query.get("path", [""])[0], SALES_WORKBENCH_KNOWLEDGE_ROOT, WORKBENCH_DATA_ROOT)
-                else:
-                    offset = max(0, min(5000, int(query.get("offset", ["0"])[0])))
-                    limit = max(1, min(30, int(query.get("limit", ["20"])[0])))
-                    reports = load_persisted_pm_reports(offset + limit + 1)
-                    result = {"ok": True, "days": reports[offset:offset + limit], "has_more": len(reports) > offset + limit}
-                self._send_json(result)
-            except ValueError as exc:
-                self._send_json({"error": str(exc)}, status=400)
+                query=parse_qs(parsed.query)
+                self._send_json(read_source(query.get("project_id", [""])[0],query.get("path", [""])[0],SALES_WORKBENCH_KNOWLEDGE_ROOT,WORKBENCH_DATA_ROOT))
+            except ValueError as exc:self._send_json({"error":str(exc)},status=400)
             return
         if parsed.path == "/api/crm/status":
             try:
@@ -9978,19 +9945,11 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 try:self._send_json(communication_jobs.start(self._read_json_body(),WORKBENCH_DATA_ROOT,SALES_WORKBENCH_KNOWLEDGE_ROOT))
                 except ValueError as exc:self._send_json({'error':str(exc)},status=400)
                 return
-            if parsed.path == "/api/quotes":
-                try: self._send_json(quote_versions.save(WORKBENCH_DATA_ROOT, self._read_json_body()))
-                except quote_versions.QuoteConflict as exc: self._send_json({'error': str(exc)}, status=409)
-                return
             if parsed.path == "/api/discovery/handoff":
                 self._send_json(save_discovery_handoff(self._read_json_body()))
                 return
             if parsed.path == "/api/discovery/notes":
                 self._send_json(discovery_workspace.save_note(self._read_json_body(), WORKBENCH_DATA_ROOT, [apply_prospecting_time_window(dict(item)) for item in load_prospecting_state().get("leads", [])], account_store_rows()))
-                return
-            if parsed.path in {"/api/commercial/draft", "/api/commercial/preview"}:
-                method = commercial.save_draft if parsed.path.endswith("/draft") else commercial.preview_draft
-                self._send_json(method(self._read_json_body(), SALES_WORKBENCH_KNOWLEDGE_ROOT, WORKBENCH_DATA_ROOT))
                 return
             if parsed.path in ("/api/crm/configure", "/api/crm/sync"):
                 self._send_json({"ok": False, "error": "业务平台旧CRM接口已停用，请使用新版 K100"}, status=410)

@@ -1,5 +1,5 @@
 // These views own their reads; they must never wait for the legacy aggregate dashboard.
-export const INDEPENDENT_VIEWS = new Set(['agent', 'invoices', 'projects', 'customers', 'pricing', 'communications', 'knowledge', 'aihot', 'performance', 'today', 'discover']);
+export const INDEPENDENT_VIEWS = new Set(['agent', 'projects', 'communications', 'knowledge', 'today', 'discover']);
 export const needsWorkbenchData = view => !INDEPENDENT_VIEWS.has(view);
 export const EMPTY_WORKBENCH_VALUE = Object.freeze({});
 export const PROJECT_SNAPSHOT_KEY = 'workbench-project-list-snapshot-v1';

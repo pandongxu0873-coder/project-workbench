@@ -4,7 +4,6 @@ import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from project_workspace import build_projects
-import commercial
 
 ORDER_FIELDS = ('id','bizCode','customerId','customerName','opportunityId','opportunityName','contractId','contractBizCode','orderAmount','performanceAmount','receivedAmount','pendingReceivableAmount','approvalStatus','paymentStatus','k100ContractSignedByBothParties','approvedTime','updatedAt','planReceivableDate1','planReceivableAmount1')
 CONTRACT_FIELDS = ('id','bizCode','contractTitle','contractAmount','approvalStatus','signedDate','updatedAt')
@@ -76,15 +75,6 @@ def audit(project_id, knowledge_root, state_root, project_snapshot=None, include
                         'evidence':proof,'materials':materials,'payment_comparison':payment,
                         'contract_note':'' if contract else '当前快照未匹配合同详情，订单合同编号保留；不据此判断无合同'})
     quote=None
-    if include_quote:
-        try:
-            result=commercial.get_draft(project_id,knowledge_root,state_root)
-            d=result['draft']
-            if d.get('revision'):
-                quote={'revision':d['revision'],'quote_id':d.get('quote_id'),'quote_revision':d.get('quote_revision'),
-                       'version':d.get('version'),'amount':result['calculation']['revenue'],'stale':result['stale_quote'],
-                       'status':'本机报价草稿；不代表客户确认、内部获批或CRM订单版本'}
-        except (ValueError,OSError): issues.append('本地报价版本暂不可读取，CRM记录仍可核对')
     return {'ok':True,'project_id':project_id,'project_title':project['title'],'matches':matches,'issues':issues,'local_quote':quote,
             'orders_read_at':order_resource.get('fetched_at'),'contracts_read_at':contract_resource.get('fetched_at'),
             'coverage':{k:resources.get(k,{}).get('coverage','not_read') for k in ('orders','contracts')},

@@ -34,8 +34,6 @@ export function ProjectContractAudit({projectId,refreshKey,navigate}) {
           {materials.map(e=><button className="source-link" key={e.path} onClick={()=>openSource(e)}>{e.label}</button>)}
         </details>
       </article>)}
-      {data.local_quote&&<p>本地报价 {data.local_quote.version||`修订${data.local_quote.revision}`}：{money(data.local_quote.amount)}{data.local_quote.stale?' · 已有新版':''}。{data.local_quote.status}</p>}
-      <button className="plain-action" onClick={()=>navigate('pricing',{projectId,pricingTab:'approval',focusCommercial:'project-materials'})}>查看本项目报价与审批材料</button>
       {data.issues.map((x,i)=><p role="status" key={i}>{x}</p>)}
       {Object.entries(data.sync_errors).map(([k,v])=><p role="alert" key={k}>{k==='orders'?'订单':'合同'}更新失败：{v}，保留上次读取时间。</p>)}
       <details><summary>读取范围与时间</summary><p>订单读取：{date(data.orders_read_at)}；合同读取：{date(data.contracts_read_at)}。</p><p>{Object.values(data.coverage).every(v=>v==='all_available_pages')?'已读取当前账号可见的全部分页。':'部分列表只读到首屏或尚未读取，不据此判断记录不存在。'}{data.note}</p></details>

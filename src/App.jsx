@@ -3,19 +3,14 @@ import BusinessOverview from './BusinessOverview.jsx';
 import {Stack as AgentStack,SquaresFour as AgentSidebar,UsersThree as AgentTree,CalendarDots as AgentCalendar,Broadcast as AgentScan,FolderSimple as AgentBooks,Buildings as NavBuildings,ChartBar as NavChart,Calculator as NavCalculator,FileText as NavFile,ArrowsClockwise as NavSync,Sparkle as NavSparkle,Receipt as NavReceipt,ChatCircle as NavChat,Plus as NavPlus} from '@phosphor-icons/react';
 import {ProgressComposer} from './ProgressComposer.jsx';
 import ProjectNotifications from './ProjectNotifications.jsx';
-import InvoiceVault from './InvoiceVault.jsx';
 import { contextForProject } from './signalProjectContext.js';
 import { SalesPursuit } from './SalesPursuit.jsx';
 import { useWorkbenchMotion } from './WorkbenchMotion.jsx';
 import { WorkbenchLoading, UpdateProgress } from './WorkbenchLoading.jsx';
 import { needsWorkbenchData, EMPTY_WORKBENCH_VALUE } from './workbenchStartup.js';
-import { selectQuoteIdentity, quoteIdentity as savedQuoteIdentity } from './quoteIdentity.js';
 import { ProjectFollowups } from './ProjectFollowups.jsx';
 import { MaterialLibrary } from "./MaterialLibrary.jsx";
 import { CommunicationSync } from './CommunicationSync.jsx';
-import { AIHot } from './AIHot.jsx';
-import { APPROVAL_KEY, COST_FIELDS, restoreApproval, syncApprovalFromQuote, editApproval, formatApproval } from "./approvalDraft.js";
-import { QUICK_QUOTE_KEY, restoreQuote, calculateQuote } from "./quickQuote.js";
 import { shouldClearProject, OVERVIEW_KEY } from "./projectOverview.js";
 import { createWorkbenchNavigation, readNavigationContext } from "./workbenchNavigation.js";
 import { DiscardChangesProvider, NavigationGuardContext, useDiscardChanges } from "./DiscardDialog.jsx";
@@ -76,10 +71,7 @@ import {
   X,
 } from "lucide-react";
 import { api, loadWorkbenchData } from "./api.js";
-import { ProjectWorkspace, ReportSync } from "./ProjectWorkspace.jsx";
-import { CrmConnect } from "./CrmConnect.jsx";
-import { ProjectContractAudit } from "./ProjectContractAudit.jsx";
-import CommercialWorkspace from "./CommercialWorkspace.jsx";
+import { ProjectWorkspace } from "./ProjectWorkspace.jsx";
 import DiscoveryWorkspace from "./DiscoveryWorkspace.jsx";
 
 const STAGE_ORDER = ["qualify", "path", "contact", "opportunity"];
@@ -100,16 +92,10 @@ const ACCOUNT_STATE_OPTIONS = [
 const NAV_ITEMS = [
   { id: "agent", label: "工作空间", icon: AgentSidebar, primary: true },
   { id: "projects", label: "客户作战室", icon: AgentTree, primary: true },
-  { id: "customers", label: "客户目录", icon: NavBuildings, primary: true },
   { id: "discover", label: "战略客户雷达", icon: AgentScan, primary: true },
-  { id: "performance", label: "合同业绩", icon: NavChart, primary: true },
-  { id: "pricing", label: "报价与审批", icon: NavCalculator, primary: true },
-  { id: "reports", label: "项目群日报", icon: NavFile },
   { id: "communications", label: "同步资料", icon: NavSync },
-  { id: "aihot", label: "AI Hot 资讯", icon: NavSparkle, intelligence: true },
   { id: "accounts", label: "客户登记", icon: NavBuildings, nested: true },
   { id: "reminders", label: "日程 / Deadline", icon: AgentCalendar },
-  { id: "invoices", label: "发票夹", icon: NavReceipt, intelligence: true },
   { id: "knowledge", label: "材料库", icon: AgentBooks, intelligence: true },
 ];
 
@@ -306,7 +292,6 @@ function evidenceCompleteness(item = {}, data = {}) {
     { id: "time", label: "时间已明确", ok: Boolean(item.deadline || item.review_at) },
     { id: "next", label: "下一步清楚", ok: Boolean(item.next_step || item.action || item.target) },
     { id: "account", label: "正式账户匹配", ok: Boolean(account) },
-    { id: "invoices", label: "发票夹", icon: NavReceipt, intelligence: true },
   { id: "knowledge", label: "客户证据沉淀", ok: Boolean(knowledge.length) },
   ];
   const passed = checks.filter((check) => check.ok).length;
@@ -476,71 +461,26 @@ function useWorkbench(enabled, view) {
 function App() {
   const [initialContext] = useState(() => readNavigationContext(sessionStorage, window.history));
   const [navigationEpoch, setNavigationEpoch] = useState(0);
-  const [pricingTab, setPricingTab] = useState(initialContext.pricingTab || "calculator");
-  const [commercialFocus,setCommercialFocus]=useState('');
   const historyNavigation = useRef(null);
   const applyingHistory = useRef(false);
   const [view, setView] = useState(initialContext.view || "agent");
-  const [captureOpen, setCaptureOpen] = useState(false);
-  const { data, error, loading, refresh, refreshVersion, progress } = useWorkbench(needsWorkbenchData(view) || captureOpen, view);
+  const { data, error, loading, refresh, refreshVersion, progress } = useWorkbench(needsWorkbenchData(view), view);
   const pageRefreshKey = useMemo(() => ({ generated_at: refreshVersion }), [refreshVersion]);
   const [toast, setToast] = useState("");
   const [focusAction, setFocusAction] = useState(null);
   const [projectTitle, setProjectTitle] = useState(initialContext.projectTitle || "");
   const [projectCustomer, setProjectCustomer] = useState(initialContext.customer || "");
   const [overviewReset,setOverviewReset]=useState(0);
-  const [pricingReset,setPricingReset]=useState(0);
-  const [quickQuoteValues,setQuickQuoteValues]=useState(()=>restoreQuote(sessionStorage));
-  const [quickApproval,setQuickApproval]=useState(()=>restoreApproval(sessionStorage));
-  const [incomingQuote, setIncomingQuote] = useState(null);
-  const [quoteConflict, setQuoteConflict] = useState(null);
-  useEffect(() => { let active = true; const identity = quoteIdentity.current;
-    if (identity?.revision > 0) api.get(`/api/quotes?quote_id=${encodeURIComponent(identity.quote_id)}`).then(data => {
-      if (active && quoteIdentity.current === identity && data.versions?.length) {
-        const latest = { ...data.versions.at(-1), quote_id: data.quote_id };
-        setIncomingQuote(latest);
-        if (data.revision > identity.revision) setQuoteConflict(latest);
-        const baseline = data.versions.find(v => v.revision === identity.revision);
-        if (baseline) quoteIdentity.current = savedQuoteIdentity({ ...baseline, quote_id: data.quote_id });
-      }
-    }).catch(() => {});
-    return () => { active = false; };
-  }, []);
-  const [quoteSaving, setQuoteSaving] = useState(false);
-  const quoteIdentity = useRef(null);
-  if (!quoteIdentity.current) { try { quoteIdentity.current = JSON.parse(sessionStorage.getItem('workbench-quote-identity')); } catch {} if (!quoteIdentity.current || typeof quoteIdentity.current.quote_id !== 'string' || !Number.isInteger(quoteIdentity.current.revision)) quoteIdentity.current = { quote_id: crypto.randomUUID(), revision: 0 }; }
-  const transferQuote = async values => {
-    setQuoteSaving(true);
-    try {
-    const identity = selectQuoteIdentity(quoteIdentity.current, values, () => crypto.randomUUID());
-    let saved;
-    try { saved = await api.post('/api/quotes', { ...identity, values }); }
-    catch (error) {
-      try { const current = await api.get(`/api/quotes?quote_id=${encodeURIComponent(identity.quote_id)}`);
-        if (current.revision > identity.revision) setQuoteConflict({ ...current.versions.at(-1), quote_id: current.quote_id });
-      } catch {}
-      throw error;
-    }
-    quoteIdentity.current = savedQuoteIdentity(saved);
-    setQuoteConflict(null);
-    try { sessionStorage.setItem('workbench-quote-identity', JSON.stringify(quoteIdentity.current)); } catch {}
-    setIncomingQuote(saved);
-    await navigate('pricing', { pricingTab: 'approval' });
-    return saved;
-    } finally { setQuoteSaving(false); }
-  };
-  useEffect(()=>{try{sessionStorage.setItem(QUICK_QUOTE_KEY,JSON.stringify(quickQuoteValues));}catch{}setQuickApproval(current=>syncApprovalFromQuote(current,quickQuoteValues,calculateQuote(quickQuoteValues)));},[quickQuoteValues]);
-  useEffect(()=>{try{sessionStorage.setItem(APPROVAL_KEY,JSON.stringify(quickApproval));}catch{}},[quickApproval]);
   const [signalContext,setSignalContext]=useState(contextForProject(initialContext.signalContext,initialContext.projectId));
   const [projectContext, setProjectContext] = useState(initialContext.projectId || "");
   const [accountContext, setAccountContext] = useState(initialContext.accountId || "");
-  useEffect(() => { try { sessionStorage.setItem("workbench-context", JSON.stringify({ view, projectId: projectContext, projectTitle, customer:projectCustomer, pricingTab, signalContext, accountId: accountContext })); } catch {} }, [view, projectContext, projectTitle, projectCustomer, pricingTab, signalContext, accountContext]);
+  useEffect(() => { try { sessionStorage.setItem("workbench-context", JSON.stringify({ view, projectId: projectContext, projectTitle, customer:projectCustomer, signalContext, accountId: accountContext })); } catch {} }, [view, projectContext, projectTitle, projectCustomer, signalContext, accountContext]);
   const navigationGuard = useRef(() => true);
   const navigationPending = useRef(false);
   const registerNavigationGuard = useCallback((guard) => { navigationGuard.current = guard; return () => { if (navigationGuard.current === guard) navigationGuard.current = () => true; }; }, []);
 
   const routeRef = useRef(null);
-  routeRef.current = { view, projectId: projectContext, projectTitle, customer: projectCustomer, pricingTab, signalContext, accountId: accountContext };
+  routeRef.current = { view, projectId: projectContext, projectTitle, customer: projectCustomer, signalContext, accountId: accountContext };
   const selectProjectContext = useCallback((id, meta = {}) => {
     const next = { ...routeRef.current, projectId: id, accountId: '', projectTitle: meta.title || '', customer: meta.customer || '',signalContext:contextForProject(routeRef.current.signalContext,id) };
     if (id !== routeRef.current.projectId && !applyingHistory.current) historyNavigation.current?.push(next);
@@ -565,7 +505,7 @@ function App() {
         routeRef.current = next;
         setAccountContext(next.accountId || ''); setView(next.view || 'agent'); setProjectContext(next.projectId || ''); setSignalContext(contextForProject(next.signalContext,next.projectId));
         setProjectTitle(next.projectTitle || ''); setProjectCustomer(next.customer || '');
-        setPricingTab(next.pricingTab || 'calculator'); setCommercialFocus(''); setFocusAction(null); setNavigationEpoch(v => v + 1);
+        setFocusAction(null); setNavigationEpoch(v => v + 1);
         requestAnimationFrame(() => { if (next.view !== 'projects') document.querySelector('.app-main')?.scrollTo({ top: snapshot.scroll || 0 }); applyingHistory.current = false; });
       },
     });
@@ -601,6 +541,7 @@ function App() {
 
   const [notificationContext,setNotificationContext]=useState(null);
   const navigate = async (nextView, options = {}) => {
+    if (!["agent","projects","reminders","discover","knowledge","communications","accounts","today"].includes(nextView)) nextView = "projects";
     if (navigationPending.current || historyNavigation.current?.busy()) return false;
     navigationPending.current = true;
     let allowed = false;
@@ -615,14 +556,10 @@ function App() {
     }
     nextRoute.signalContext=contextForProject(options.signalContext??nextRoute.signalContext,nextRoute.projectId);
     setSignalContext(nextRoute.signalContext);
-    if (nextView === 'pricing') nextRoute.pricingTab = options.pricingTab || 'calculator';
     if (JSON.stringify(nextRoute) !== JSON.stringify(routeRef.current)) historyNavigation.current?.push(nextRoute);
     routeRef.current = nextRoute;
-    setPricingTab(nextRoute.pricingTab);
-    setCommercialFocus(nextView==='pricing'?(options.focusCommercial||''):'');
     if (shouldClearProject(options)) {setProjectContext(options.projectId);if(!options.projectId){setProjectTitle("");setProjectCustomer("");}else if(options.projectTitle){setProjectTitle(options.projectTitle);setProjectCustomer(options.customer||"");}}
     if(options.resetProjectFilter)setOverviewReset(Date.now());
-    if(nextView==="pricing")setPricingReset(v=>v+1);
     setFocusAction(options.focusAction || null);
     setView(nextView);
     return true;
@@ -640,17 +577,13 @@ function App() {
 
         <nav className="nav-stack">
           {['agent','projects','reminders','discover','knowledge','communications'].map(key=>{const item=NAV_ITEMS.find(n=>n.id===key);return <NavButton key={key} item={item} active={view===key} onClick={()=>navigate(key,key==='projects'?{projectId:'',resetProjectFilter:true}:{})}/>})}
-          <details className="sidebar-more"><summary>更多工具</summary>
-            <button className="nav-button" onClick={()=>setCaptureOpen(true)}><NavPlus size={17}/>销售捕捉</button>
-            {NAV_ITEMS.filter(n=>!['agent','projects','reminders','discover','knowledge','communications'].includes(n.id)&&!n.nested).map(item=><NavButton key={item.id} item={item} active={view===item.id} onClick={()=>navigate(item.id)}/>)}
-          </details>
         </nav>
 
         <div className="sidebar-status">
           <span className="live-dot" />
           <div>
-            <strong>{view==="aihot"?"公开资讯":view==="projects"?"项目分析":view==="customers"?"K100 客户主体":"本地历史登记"}</strong>
-            <span>{view==="aihot"?"AIHOT · 本机缓存":view==="projects"?"基于已有材料，判断可核对":(data ? `${accountData.summary?.account_count||0} 条 · 实际归属以 CRM 核验` : "本机材料 · 按页面读取")}</span>
+            <strong>{view==="projects"?"项目分析":view==="customers"?"K100 客户主体":"本地历史登记"}</strong>
+            <span>{view==="projects"?"基于已有材料，判断可核对":(data ? `${accountData.summary?.account_count||0} 条 · 实际归属以 CRM 核验` : "本机材料 · 按页面读取")}</span>
           </div>
         </div>
       </aside>
@@ -659,7 +592,7 @@ function App() {
         <header className="app-topbar">
           <div>
             <strong>{NAV_ITEMS.find((item) => item.id === view)?.label || "项目管理工作台"}</strong>
-            <span>{view === 'aihot' ? '公开资讯 · 本机缓存' : dashboard.generated_at ? `数据更新 ${formatDateTime(dashboard.generated_at)}` : "本机工作台"}</span>
+            <span>{dashboard.generated_at ? `数据更新 ${formatDateTime(dashboard.generated_at)}` : "本机工作台"}</span>
           </div>
           <div className="topbar-actions">
             {view!=='agent'&&<button className="plain-action global-agent-link" onClick={()=>navigate('agent')}> <NavChat size={16}/>问 Agent</button>}<ProjectNotifications refreshKey={pageRefreshKey} onOpen={openNotification}/>
@@ -682,29 +615,16 @@ function App() {
           {view === "agent" ? <AgentWorkspace navigate={navigate} refreshKey={refreshVersion} registerNavigationGuard={registerNavigationGuard}/> : null}
           {waitingForView ? (error ? <ErrorScreen message={error} onRetry={() => refresh()} /> : <WorkbenchLoading title={NAV_ITEMS.find(item => item.id === view)?.label || "当前页面"} progress={progress} />) : null}
           {projectContext && view !== "projects" && <div className="project-context-return"><button className="plain-action" onClick={() => navigate("projects", { projectId: projectContext })}>← 返回{projectTitle||"刚才项目"}</button><button className="plain-action" onClick={() => navigate("projects", { projectId:"",resetProjectFilter:true })}>项目总览</button></div>}
-          {["projects","customers"].includes(view) ? <ProjectWorkspace directoryOnly={view==='customers'} onOpenNotification={openNotification} notificationContext={notificationContext} key={`${view}:${navigationEpoch}`} onBack={() => historyNavigation.current?.canGoBack() ? historyNavigation.current.back() : navigate('projects', { projectId: '' })} overviewReset={overviewReset} navigate={navigate} initialProjectId={view==='customers'?'':projectContext} initialAccountId={view==='customers'?'':accountContext} onAccountSelected={selectAccountContext} signalContext={signalContext} onProjectSelected={selectProjectContext} refreshKey={pageRefreshKey} onActionsChanged={() => refresh({ quiet: true })} registerNavigationGuard={registerNavigationGuard} /> : null}
+          {view === "projects" ? <ProjectWorkspace onOpenNotification={openNotification} notificationContext={notificationContext} key={`${view}:${navigationEpoch}`} onBack={() => historyNavigation.current?.canGoBack() ? historyNavigation.current.back() : navigate('projects', { projectId: '' })} overviewReset={overviewReset} navigate={navigate} initialProjectId={projectContext} initialAccountId={view==='customers'?'':accountContext} onAccountSelected={selectAccountContext} signalContext={signalContext} onProjectSelected={selectProjectContext} refreshKey={pageRefreshKey} onActionsChanged={() => refresh({ quiet: true })} registerNavigationGuard={registerNavigationGuard} /> : null}
           {view === "discover" && !waitingForView ? <DiscoveryWorkspace navigate={navigate} refresh={refresh} key={`discovery:${navigationEpoch}`} data={data} registerNavigationGuard={registerNavigationGuard} /> : null}
           {view === "today" && !waitingForView ? <SalesPursuit data={data} refresh={refresh} navigate={navigate} setToast={setToast} focusAction={focusAction} onFocusConsumed={() => setFocusAction(null)} /> : null}
           {view === "accounts" && !waitingForView ? <AccountsView data={data} refresh={refresh} navigate={navigate} setToast={setToast} /> : null}
           {view === "reminders" && !waitingForView ? <RemindersView focusAction={focusAction} onFocusConsumed={() => setFocusAction(null)} data={data} refresh={refresh} navigate={navigate} setToast={setToast} /> : null}
-          {view === "invoices" ? <InvoiceVault registerNavigationGuard={registerNavigationGuard}/> : null}
           {view === "knowledge" ? <MaterialLibrary projectId={projectContext} navigate={navigate} refreshKey={pageRefreshKey} /> : null}
           {view === "communications" ? <CommunicationSync navigate={navigate} context={{projectId:projectContext,projectTitle,customer:projectCustomer}} onChanged={() => refresh({ quiet: true })} /> : null}
-          {view === "aihot" ? <AIHot /> : null}
-          {view === "reports" && !waitingForView ? <ReportsView dashboard={dashboard} refresh={refresh} /> : null}
-          {view === "performance" && !waitingForView ? <PerformanceView refreshKey={pageRefreshKey.generated_at} dashboard={dashboard} projectId={projectContext} navigate={navigate} /> : null}
-          {view === "pricing" ? <PricingWorkspace quoteConflict={quoteConflict} onResolveQuote={(merge) => { quoteIdentity.current = merge ? savedQuoteIdentity(quoteConflict) : null; if (!merge) quoteIdentity.current = { quote_id: crypto.randomUUID(), revision: 0 }; try { sessionStorage.setItem("workbench-quote-identity", JSON.stringify(quoteIdentity.current)); } catch {} setQuoteConflict(null); }} onNewQuote={() => { quoteIdentity.current = { quote_id: crypto.randomUUID(), revision: 0 }; try { sessionStorage.setItem("workbench-quote-identity", JSON.stringify(quoteIdentity.current)); } catch {} setQuoteConflict(null); setToast("已作为独立的新报价，当前输入保留；下次保存不会影响原报价。"); }} quoteSaving={quoteSaving} incomingQuote={incomingQuote} onTransferQuote={transferQuote} key={`pricing:${navigationEpoch}`} focusSection={commercialFocus} tab={pricingTab} values={quickQuoteValues} setValues={setQuickQuoteValues} approval={quickApproval} setApproval={setQuickApproval} resetKey={pricingReset} initialProjectId={projectContext} onProjectSelected={selectProjectContext} navigate={navigate} registerNavigationGuard={registerNavigationGuard} canSwitch={() => navigationGuard.current()} /> : null}
         </main>
       </div>
 
-      <CaptureDialog
-        isOpen={captureOpen}
-        onOpenChange={setCaptureOpen}
-        data={data}
-        refresh={refresh}
-        navigate={navigate}
-        setToast={setToast}
-      />
       {toast ? <div className="toast" role="status" aria-live="polite">{toast}</div> : null}
     </div></NavigationGuardContext.Provider>
   );
@@ -2151,135 +2071,6 @@ function KnowledgeView({ dashboard }) {
       ))}</section>
     </div>
   );
-}
-
-function ReportsView({ dashboard, refresh }) {
-  const [older, setOlder] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const days = [...new Map([...older, ...(dashboard.message_digest?.days || [])].map(day => [day.date, day])).values()].sort((a,b) => b.date.localeCompare(a.date));
-  async function loadOlder() {
-    setBusy(true); setError("");
-    try { const result = await api.get(`/api/messages/reports?offset=${days.length}&limit=20`); setOlder(current => [...current, ...result.days]); setHasMore(result.has_more); }
-    catch(e) { setError(e.message); }
-    finally { setBusy(false); }
-  }
-  const [includeHistory, setIncludeHistory] = useState(false);
-  const visibleDays = includeHistory ? days : days.filter(day=>day.date>=cutoffKey());
-  const [selectedDate, setSelectedDate] = useState("");
-  const selected = visibleDays.find((day) => day.date === selectedDate) || visibleDays[0];
-  return (
-    <div className="page-stack reader-page">
-      <PageHeader eyebrow="持续保留" title="项目群日报" subtitle={`最近一份日报：${dashboard.message_digest?.latest_date || "暂无"}。历史内容保留，不用首页刷新时间冒充群消息更新时间。`} />
-      <ReportSync refresh={refresh} />
-      <div className="readonly-banner"><BookOpen size={18} /><span>日报是背景信息。需要行动时，由你通过销售捕捉明确创建。</span></div>
-      <div className="report-date-tabs" role="tablist" aria-label="日报日期">{visibleDays.map((day) => <button type="button" role="tab" aria-selected={selected?.date === day.date} className={selected?.date === day.date ? "is-active" : ""} key={day.date} onClick={() => setSelectedDate(day.date)}>{day.date}<span>{day.message_count || 0} 条</span></button>)}</div>
-      <details onToggle={e=>{if(!e.currentTarget.open)setIncludeHistory(false);}}><summary>历史日报（默认收起，原文保留）</summary><p>默认仅展示近30天日报，旧日报不作为当前进展。</p><button className="plain-action" onClick={()=>setIncludeHistory(true)}>显示已有历史日报</button>{hasMore && <button className="plain-action" disabled={busy} onClick={()=>{setIncludeHistory(true);loadOlder();}}>{busy ? "正在读取历史…" : "加载更早日报"}</button>}</details>{error && <p role="alert">{error}</p>}
-      {selected ? (
-        <section className="report-reader">
-          <header><div><p>{selected.date}</p><h2>{selected.summary || "当日项目群动态"}</h2></div><StatusChip tone={selected.health === "红" ? "warning" : "neutral"}>{selected.message_count || 0} 条有效消息</StatusChip></header>
-          {(selected.items || []).map((group) => <article key={group.name}><h3>{group.name}</h3><p>{group.summary}</p>{group.discussion_points?.length ? <ul>{group.discussion_points.map((point) => <li key={point}>{point}</li>)}</ul> : null}</article>)}
-        </section>
-      ) : <EmptyMessage title="暂无项目群日报" description="同步成功后会在这里按日期显示。" />}
-    </div>
-  );
-}
-
-function PerformanceView({ dashboard, projectId, navigate, refreshKey }) {
-  const [crmRevision,setCrmRevision]=useState(0);
-  const [candidates, setCandidates] = useState([]);
-  const [candidateError, setCandidateError] = useState("");
-  useEffect(() => { api.get("/api/project-workspace/overview").then(r => setCandidates(r.projects)).catch(e => setCandidateError(e.message)); }, []);
-  const status = dashboard.fxiaoke_status || {};
-  const quarter = status.quarter || {};
-  const rows = status.pipeline?.signed_order_rows || [];
-  const stale = status.mode === "page_snapshot";
-  return (
-    <div className="page-stack">
-      <PageHeader eyebrow="经营概览" title="合同业绩" subtitle="按年、季度、月查看本人业绩及所选订单回款。" />
-      <div className="current-performance"><BusinessOverview refreshKey={refreshKey}/></div>
-      <details className="performance-support"><summary>旧 CRM 历史业绩（已停用，仅供对照）</summary><CrmConnect refreshKey={refreshKey} onSynced={()=>setCrmRevision(v=>v+1)} /></details>
-      <ProjectContractAudit key={projectId} projectId={projectId} refreshKey={crmRevision} navigate={navigate} />
-      <details className="performance-support" open={Boolean(projectId)}><summary>回到工作台项目 · 查看依据与下一步</summary>{candidateError && <p role="alert">{candidateError}</p>}
-        <section>{(projectId ? candidates.filter(p => p.id === projectId) : candidates.filter(p=>p.is_current).slice(0, 6)).map(p => <article key={p.id}><h3>{p.title}</h3><p>{p.judgement}</p>{!p.is_current && <p>当前项目属于历史待核实，仅保留往返入口，不计作当前候选机会。</p>}<button className="plain-action" onClick={() => navigate("projects", { projectId: p.id })}>查看依据并决定本轮动作</button></article>)}</section>
-      </details>
-      {status.last_sync && <details className="performance-surface"><summary>查看旧纷享销客快照（仅历史参考）</summary>
-        <div className="snapshot-warning"><CircleAlert size={18} /><div><strong>历史口径：{String(quarter.period || "周期待确认").replace("本季度", "原快照季度")}</strong><span>最后读取 {formatDateTime(status.last_sync)}。下列缺口仅属于历史季度，不是当前考核缺口。</span></div></div>
-        <div className="metric-strip"><div><span>目标</span><strong>{quarter.target_amount || "-"}</strong></div><div><span>已签约</span><strong>{quarter.achieved_amount || "-"}</strong></div><div><span>完成率</span><strong>{quarter.attainment_rate || "-"}</strong></div><div><span>缺口</span><strong>{quarter.gap_amount || "-"}</strong></div></div>
-        <section className="signed-orders"><header><strong>签约明细</strong><span>{rows.length} 笔</span></header>{rows.map((row, index) => <div key={`${row.customer_label}-${row.order_date}-${index}`}><span>{row.customer_label}</span><time>{row.order_date}</time><strong>{formatAmount(row.amount)}</strong></div>)}</section>
-      </details>}
-    </div>
-  );
-}
-
-function PricingWorkspace({ focusSection, quoteConflict, onResolveQuote, onNewQuote, quoteSaving, incomingQuote, onTransferQuote, tab, values, setValues, approval, setApproval, resetKey, initialProjectId, onProjectSelected, navigate, registerNavigationGuard, canSwitch }) {
-  const choose = value => { if (value !== tab) navigate('pricing', { pricingTab: value }); };
-  return <div className="page-stack pricing-workspace"><div className="pricing-toolbar"><div className="pricing-tabs" role="tablist" aria-label="报价工具"><button type="button" role="tab" aria-selected={tab==='calculator'} onClick={()=>choose('calculator')}>报价计算器</button><button type="button" role="tab" aria-selected={tab==='approval'} onClick={()=>choose('approval')}>项目审批材料</button></div>{tab === 'calculator' && <button disabled={quoteSaving} className="plain-action" onClick={onNewQuote}>当前输入另开一笔报价</button>}</div>
-    {tab === 'calculator' && quoteConflict && <div>
-      {quoteConflict && <section className="performance-surface" role="alert"><h2>这笔报价已有新版 · 输入已保留</h2><p>最新第 {quoteConflict.revision} 版：{quoteConflict.values.customer} · {quoteConflict.values.requirement} · {quoteConflict.values.effort} 人日 · 对客金额 ¥{Number(quoteConflict.calculation.revenue).toLocaleString('zh-CN')}</p><details><summary>查看新版范围与成本</summary><p>范围版本：{quoteConflict.values.version || '未填写'}</p>{COST_FIELDS.map(([key,label]) => <p key={key}>{label}：{quoteConflict.values.costs[key]}</p>)}<p>另计10%自成本：{quoteConflict.values.selfCostEnabled ? '是' : '否'}</p></details><button disabled={quoteSaving} onClick={() => onResolveQuote(true)}>已核对新版，保留当前输入继续修订</button><button disabled={quoteSaving} onClick={() => onResolveQuote(false)}>将当前输入另存为独立报价</button></section>}
-    </div>}
-    {tab==='calculator'?<fieldset disabled={quoteSaving} style={{border:0,padding:0,margin:0,minWidth:0}}><PricingView onTransferQuote={onTransferQuote} values={values} setValues={setValues} approval={approval} setApproval={setApproval}/></fieldset>:<CommercialWorkspace focusSection={focusSection} incomingQuote={focusSection?null:incomingQuote} initialProjectId={initialProjectId} onProjectSelected={onProjectSelected} navigate={navigate} registerNavigationGuard={registerNavigationGuard}/>}
-  </div>;
-}
-
-function PricingView({onTransferQuote,values,setValues,approval,setApproval}) {
-  const updateApproval = update => {
-    const next = typeof update === 'function' ? update(approval) : update;
-    if (next.effort !== approval.effort || next.rate !== approval.rate || next.selfCostEnabled !== approval.selfCostEnabled) {
-      const quote = { ...values, quotedDays: next.effort, billingRate: next.rate, selfCostEnabled: next.selfCostEnabled };
-      next.calculatorFingerprint = JSON.stringify(quote);
-      setValues(quote);
-    }
-    setApproval(next);
-  };
-  const model=useMemo(()=>calculateQuote(values),[values]);
-  const set=key=>event=>setValues(current=>({...current,[key]:event.target.value}));
-  const amount=(value,known)=>known?formatAmount(value):'待输入';
-  return <div className="page-stack independent-pricing">
-    <PageHeader eyebrow="随时试算" title="报价计算器" subtitle="无需关联项目。输入仅保留在当前会话，不生成审批或客户承诺。" />
-    <section className="pricing-surface"><form className="pricing-form" onSubmit={event=>event.preventDefault()}>
-      <label className="native-field"><span>预计投入人天</span><input type="number" min="0" step="any" value={values.actualDays} onChange={set('actualDays')}/></label>
-      <label className="native-field"><span>内部日成本（元／人天）</span><input type="number" min="0" step="any" value={values.internalCost} onChange={set('internalCost')}/></label>
-      <label className="native-field"><span>报价人天</span><input type="number" min="0" step="any" value={values.quotedDays} onChange={set('quotedDays')}/></label>
-      <label className="native-field"><span>对客单价（元／人天）</span><input type="number" min="0" step="any" value={values.billingRate} onChange={set('billingRate')}/></label>
-      <label className="native-field"><span>目标毛利率（%）</span><input type="number" min="0" max="100" step="any" value={values.targetMargin} onChange={set('targetMargin')}/></label>
-      <label className="check-field"><input type="checkbox" checked={values.selfCostEnabled} onChange={event=>setValues(current=>({...current,selfCostEnabled:event.target.checked}))}/><span><strong>计入成交额 10% 自成本</strong><small>按本次试算口径选择。</small></span></label>
-    </form><div className={`pricing-result ${model.comparisonKnown?(model.passed?'is-passed':'is-warning'):'is-pending'}`} aria-live="polite"><StatusChip tone={!model.comparisonKnown?'neutral':model.passed?'success':'warning'}>{!model.comparisonKnown?'待输入完整试算条件':model.passed?'达到目标毛利率':'未达到目标毛利率'}</StatusChip><h2>{amount(model.revenue,model.revenueKnown)}</h2><p>对客报价金额</p><dl><div><dt>内部成本</dt><dd>{amount(model.internalTotal,model.costKnown)}</dd></div><div><dt>自成本</dt><dd>{amount(model.selfCost,model.revenueKnown)}</dd></div><div><dt>预计毛利</dt><dd>{amount(model.grossProfit,model.revenueKnown&&model.costKnown)}</dd></div><div><dt>毛利率</dt><dd>{model.revenueKnown&&model.costKnown?`${(model.marginRate*100).toFixed(2)}%`:'待输入'}</dd></div></dl><button type="button" className="analysis-adopt" disabled={!model.revenueKnown||!model.costKnown} onClick={()=>setApproval(current=>({...current,open:true}))}>生成审批负责人审批话术</button></div></section>
-    {approval.open&&<StandaloneApproval onTransferQuote={onTransferQuote} draft={approval} setDraft={updateApproval}/>}
-  </div>;
-}
-
-
-function StandaloneApproval({draft,setDraft,onTransferQuote}) {
-  const model=useMemo(()=>formatApproval(draft),[draft]);
-  const [notice,setNotice]=useState('');
-  const [transferring,setTransferring]=useState(false);
-  const edit=patch=>{setDraft(current=>editApproval(current,patch));setNotice('');};
-  const field=key=>event=>edit({[key]:event.target.value});
-  return <section className="performance-surface standalone-approval" aria-label="独立审批负责人审批话术"><header className="standalone-approval-header"><div><h2>审批负责人审批话术</h2><p>先核对客户版本与内部成本；只生成草稿，不绑定项目、不发送。</p></div><button className="plain-action" onClick={()=>setDraft(current=>({...current,open:false}))}>收起</button></header>
-    <div className="pricing-form">{[['customer','客户'],['requirement','本次需求'],['version','本次版本']].map(([key,label])=><label className="native-field" key={key}><span>{label}</span><input value={draft[key]} onChange={field(key)} placeholder="自由输入，无需选择项目"/></label>)}
-    <label className="native-field"><span>客户确认／拟确认人日</span><input type="number" min="0" step="any" value={draft.effort} onChange={field('effort')}/></label><label className="native-field"><span>对客单价（元／人日）</span><input type="number" min="0" step="any" value={draft.rate} onChange={field('rate')}/></label><label className="native-field"><span>自有人力预算金额（已带入试算，待核对）</span><input type="number" min="0" step="any" value={draft.costs.own_labor} onChange={event=>edit({costs:{...draft.costs,own_labor:event.target.value}})}/></label></div>
-    <details><summary>其余七项成本 · 空白按0，仍需核对</summary><div className="pricing-form">{COST_FIELDS.slice(1).map(([key,label])=><label className="native-field" key={key}><span>{label}（元）</span><input type="number" min="0" step="any" value={draft.costs[key]} onChange={event=>edit({costs:{...draft.costs,[key]:event.target.value}})}/></label>)}</div></details>
-    <label className="check-field"><input type="checkbox" checked={draft.selfCostEnabled} onChange={event=>edit({selfCostEnabled:event.target.checked})}/><span>另外计入成交额10%自成本（单独列示，不并入八项预算）</span></label>
-    <div className="approval-confirmations"><label className="check-field"><input type="checkbox" checked={draft.customerConfirmed} onChange={event=>setDraft(current=>({...current,customerConfirmed:event.target.checked}))}/><span>客户已确认本次人日及版本</span></label><label className="check-field"><input type="checkbox" checked={draft.costsConfirmed} onChange={event=>setDraft(current=>({...current,costsConfirmed:event.target.checked}))}/><span>内部八项成本及自成本口径已核对</span></label></div>
-    <p className={model.ready?'approval-ready':'analysis-meta'}>{model.ready?'已按双方核对结果生成，仍是未提交草稿':'待核实草稿 · '+model.errors.join('；')}</p><label className="native-field"><span>内部审批文本（包含成本与毛利）</span><textarea readOnly rows={14} value={model.text}/></label><button className="analysis-adopt" disabled={!model.valid} onClick={async()=>{try{await navigator.clipboard.writeText(model.text);setNotice('审批草稿已复制；未发送、未提交审批。');}catch{setNotice('请手动选择文本复制。');}}}>复制审批负责人审批话术</button><button className="plain-action" disabled={!model.valid || transferring} onClick={async()=>{if(transferring)return;setTransferring(true);try{await onTransferQuote(draft);}catch(e){setNotice(e.message);}finally{setTransferring(false);}}}>{transferring?'正在保存报价版本…':'带入项目审批材料（可选）'}</button>{notice&&<p role="status">{notice}</p>}
-  </section>;
-}
-
-
-function CaptureDialog({ isOpen, onOpenChange }) {
- const [projects,setProjects]=useState([]),[selected,setSelected]=useState(''),[error,setError]=useState('');
- const [dirty,setDirty]=useState(false),[busy,setBusy]=useState(false);
- const askDiscard=useDiscardChanges();
- useEffect(()=>{if(!isOpen)return;setSelected('');setDirty(false);api.get('/api/project-workspace').then(x=>setProjects(x.projects||[])).catch(e=>setError(e.message));},[isOpen]);
- async function close(){if(busy)return;if(dirty&&!await askDiscard('进展尚未保存，是否放弃这段输入？'))return;onOpenChange(false);}
- const project=projects.find(x=>x.id===selected);
- return <Dialog isOpen={isOpen} onOpenChange={open=>open?onOpenChange(true):close()} width="min(680px, calc(100vw - 48px))" maxHeight="88vh" purpose="form"><div className="capture-dialog">
- <header><h2>记录新进展 / 补充纠正</h2><button aria-label="关闭销售捕捉" onClick={close}>×</button></header>
- <label className="native-field"><span>归属项目</span><select aria-label="进展归属项目" value={selected} disabled={dirty||busy} onChange={e=>setSelected(e.target.value)}><option value="">请选择项目，不继承上次对象</option>{projects.filter(x=>!x.archive?.archived).map(x=><option value={x.id} key={x.id}>{x.customer} · {x.title}</option>)}</select></label>
- {error&&<p role="alert">{error}</p>}{project&&<ProgressComposer key={project.id} project={project} markDirty={(_,v)=>setDirty(v)} markSaving={(_,v)=>setBusy(v)}/>}
- </div></Dialog>;
 }
 
 export default function WorkbenchRoot() { return <DiscardChangesProvider><App /></DiscardChangesProvider>; }

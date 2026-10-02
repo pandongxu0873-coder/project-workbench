@@ -192,7 +192,7 @@ export function ProjectWorkspace({ directoryOnly=false, onOpenNotification, noti
   return <div className="page-stack project-workspace project-overview workspace-redesign" ref={overviewRoot}>
     <header className="overview-heading overview-heading-compact workspace-overview-heading">
       <div className="workspace-heading-title"><h1>{directoryOnly?'客户目录':accountId?'客户跟进':customerFilter?displayCustomer(customerFilter):'项目工作台'}</h1><span className="overview-counts" hidden={Boolean(accountId)||directoryOnly}>{!countsKnown ? (loading?"正在读取项目":"项目数量待读取") : `${scopedProjects.length} 个项目`}</span></div>
-      <div className="workspace-heading-tools" hidden={Boolean(accountId)}><label className="native-field workspace-project-search"><Search size={16} aria-hidden="true"/><span className="sr-only">搜索客户或项目</span><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="搜索客户或项目" /></label>{customerFilter&&<button className="plain-action" onClick={()=>{setCustomerFilter('');setQuery('');}}>全部客户 ×</button>}<details className="overview-more"><summary>更多</summary><div className="workspace-shortcuts">{[['reports','项目群日报'],['reminders','提醒与日程'],['knowledge','全部沟通材料']].map(([view,label])=><button key={view} onClick={()=>navigate(view)}>{label}</button>)}</div></details></div>
+      <div className="workspace-heading-tools" hidden={Boolean(accountId)}><label className="native-field workspace-project-search"><Search size={16} aria-hidden="true"/><span className="sr-only">搜索客户或项目</span><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="搜索客户或项目" /></label>{customerFilter&&<button className="plain-action" onClick={()=>{setCustomerFilter('');setQuery('');}}>全部客户 ×</button>}<details className="overview-more"><summary>更多</summary><div className="workspace-shortcuts">{[['reminders','提醒与日程'],['knowledge','全部沟通材料']].map(([view,label])=><button key={view} onClick={()=>navigate(view)}>{label}</button>)}</div></details></div>
     </header>
     {accountId&&<DiscoveryWorkspace key={`account:${accountId}`} accountId={accountId} relatedProjects={customerDirectory(accounts,projects).find(row=>row.account?.id===accountId)?.projects||[]} registerNavigationGuard={registerAccountGuard} onClose={()=>{onAccountSelected?.('');setAccountId('');requestAnimationFrame(()=>document.querySelector('.app-main')?.scrollTo({top:scrollPosition.current.scrollMain}));}} navigate={(view,options)=>view==='projects'&&options?.projectId?choose(options.projectId):navigate(view,options)}/>}
     <div hidden={Boolean(accountId)}>
@@ -220,7 +220,7 @@ export function ProjectWorkspace({ directoryOnly=false, onOpenNotification, noti
     {project&&<ProjectDrawer onOpenNotification={onOpenNotification} onArchive={requestArchive} key={project.id} onBack={onBack} dialogRef={drawer} project={project} related={verified?projectConnections(project,projects):[]} onRelated={choose} onClose={()=>choose('')} onOverview={()=>choose('',{reset:true})} onCustomer={()=>choose('',{customer:recognizedCustomer(project.customer)?project.customer:undefined})}>
       <div hidden={Boolean(source)}>{notificationContext?.project_id===project.id&&<NotificationChanges item={notificationContext} onSource={openSource}/>}<ArchiveStatus archive={project.archive} onOpenSource={openSource} onRestore={()=>requestArchive([project],'restore')}/><ProjectAnalysis identitySurface={<K100IdentityQuestion key={project.id} projectId={project.id}/>} crmSurface={<K100ProjectContext projectId={project.id} refreshKey={roundRefresh}/>} historySurface={<>      <details className="project-manual-history"><summary>约定、暂停与执行历史</summary><ProjectRound key={`${project.id}:${roundReload}`} project={project} externallyBusy={savingCount>0&&savingActions.current.has(`analysis:${project.id}`)} onSavedRound={()=>{setRoundRefresh(v=>v+1);refresh();onActionsChanged?.();}} markDirty={markDirty} markSaving={markSaving} navigate={(view,options)=>navigate(view,{...options,projectTitle:project.title,customer:project.customer})} /></details>
 
-      <details className="drawer-tools"><summary>商务与项目工具</summary><div className="workspace-shortcuts">{[['pricing','报价／邮件／审批'],['reports','项目群日报'],['reminders','提醒与日程'],['performance','合同业绩'],['accounts','客户登记']].map(([view,label])=><button key={view} onClick={()=>navigate(view,{projectId:project.id,projectTitle:project.title,customer:project.customer})}>{label}</button>)}</div>
+      <details className="drawer-tools"><summary>项目工具</summary><div className="workspace-shortcuts">{[['reminders','提醒与日程'],['accounts','客户登记']].map(([view,label])=><button key={view} onClick={()=>navigate(view,{projectId:project.id,projectTitle:project.title,customer:project.customer})}>{label}</button>)}</div>
         
         <details><summary>其他材料建议与历史行动</summary>{project.actions.map(action=><ProjectAction key={action.id} action={action} project={project} refresh={refresh} commitAction={commitAction} markDirty={markDirty} markSaving={markSaving} onSaved={verified=>setReceipt(verified?'历史行动已保存并读回。':'已保存，读回暂未完成。')} />)}</details>
       </details>
@@ -314,36 +314,4 @@ function ProjectAction({ action, project, refresh, commitAction, markDirty, mark
   return <article className="project-action"><div><small>{action.record.status || "材料建议 · 尚未复核"} · 建议协作：{[action.suggested_role, ...(action.support_roles || [])].join("、")}</small><h3>{action.task}</h3><p>{action.record.owner ? `已记录协作人：${action.record.owner}` : `期望产出：${action.deliverable}`}{action.record.due && ` · 跟进日期 ${action.record.due}`}</p>{action.record.result && <p>最近结果：{action.record.result}</p>}<button className="plain-action" onClick={() => setOpen(!open)}>{open ? "收起" : "安排 / 记录结果"}</button></div>
     {open && <form onSubmit={save}><fieldset disabled={busy} className="project-action-form"><label className="native-field"><span>具体协作人</span><input value={record.owner} onChange={set("owner")} placeholder="尚未确认时留空，不自动指派" /></label><label className="native-field"><span>计划跟进日期（不自动创建提醒）</span><input type="date" value={record.due} onChange={set("due")} /></label><label className="native-field"><span>实际推进状态</span><select value={record.status} onChange={set("status")}>{["待安排", "已联系待接受", "执行中", "等待反馈", "已完成"].map(s => <option key={s}>{s}</option>)}</select></label><label className="native-field"><span>实际结果 / 确认依据</span><textarea value={record.result} onChange={set("result")} rows={3} required={record.status === "已完成"} placeholder="已发送不等于已接受；已接受不等于已完成" /></label><button className="plain-action" type="submit">{busy ? "保存中…" : "保存本轮进展"}</button>{message && <button className="plain-action" type="button" onClick={reload}>放弃本条修改，重新加载最新记录</button>}<p role="status">{message}</p></fieldset></form>}
   </article>;
-}
-
-export function ReportSync({ refresh }) {
-  const [status, setStatus] = useState(null);
-  const [health, setHealth] = useState(null);
-  const [auth, setAuth] = useState(null);
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
-  async function inspect() { const [s, h] = await Promise.all([api.get("/api/messages/status"), api.get("/api/messages/health")]); setStatus(s); setHealth(h.health); setAuth(s.auth || null); }
-  useEffect(() => { inspect().catch(e => setMessage(e.message)); }, []);
-  async function run(kind) {
-    setBusy(true); setMessage("");
-    try {
-      if (kind === "sync" && status?.action_required) {
-        setMessage("正在接收授权并验证项目群读取…");
-        const completed = await api.post("/api/messages/auth/complete");
-        if (!completed.ready) { setMessage(completed.message); await inspect(); return; }
-      }
-      const result = await api.post(`/api/messages/${kind}`);
-      if (kind === "auth/start") { setAuth(result); setMessage(result.reused ? "已保留当前授权请求，不会覆盖你正在确认的链接。" : "授权链接已生成，请打开飞书授权页面；完成后回来同步，工作台会先接回授权。"); }
-      else { setMessage(kind === "sync" ? `读取结束：新增 ${result.new_messages || 0} 条，失败 ${result.failed_groups || 0} 个群。` : result.message); await inspect(); await refresh({ quiet: true }); }
-    } catch (e) { setMessage(e.message); await inspect().catch(() => {}); }
-    finally { setBusy(false); }
-  }
-  return <section className="project-judgement" aria-label="日报同步状态"><h2>{status ? (status.action_required ? (auth?.verification_url && !auth.expired ? "授权链接已生成，等待你在飞书确认" : "飞书读取需要恢复授权") : "飞书用户读取通道可用") : "正在检查飞书读取权限…"}</h2><p>最后完整成功：{health?.last_success_at || "未记录"} · 最近同步尝试：{health?.last_attempt_at || "未记录"}</p><p>{status?.action_required ? "历史日报不受影响。生成链接后，还需到飞书确认，再回来检查结果。" : "同步只读取项目群消息并更新本地日报，不往群里发送内容。"}</p>
-    {health?.status === "partial" && <p>上次有 {health.failed_groups} 个群失败，日报不完整。</p>}
-    <div className="workspace-shortcuts"><button disabled={busy || !status} onClick={() => run("sync")}>{busy ? "处理中…" : status?.action_required ? "接回授权并同步今天消息" : "同步今天消息"}</button>{status?.action_required && <button disabled={busy} onClick={() => run("auth/start")}>{auth?.verification_url && !auth.expired ? "查看当前授权链接" : "重新授权飞书"}</button>}</div>
-    {auth?.verification_url && !auth.expired && <div><p><a href={auth.verification_url} target="_blank" rel="noreferrer">第 1 步：打开飞书授权页面 ↗</a></p><p>此次申请群消息读取、群信息读取及持续读取授权，不申请用户消息发送权限。请核对飞书页面后确认。过期时间：{auth.expires_at}</p><button className="plain-action" disabled={busy} onClick={() => run("auth/complete")}>第 2 步：我已授权，检查结果</button><p>检查通过后，再点“同步今天消息”。</p></div>}
-    {auth?.expired && <p>旧授权链接已过期，请点击“重新授权飞书”生成新的链接。</p>}
-    {message && <p role="status" className="break-text">{message}</p>}
-    {health?.error && <details><summary>查看上次同步失败记录 · {health.last_attempt_at || "历史记录"}</summary><p>这是上次同步的结果，不代表刚生成的授权失败。</p><p className="break-text">{health.error}</p></details>}
-  </section>;
 }
