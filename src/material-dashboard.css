@@ -1,0 +1,129 @@
+/* One continuous color field; translucent work surfaces share its light. */
+.workbench-shell.view-agent:has(.portfolio-home){
+ --material-ink:#253b53;--material-accent:#3568ee;
+ background:radial-gradient(ellipse at 88% 22%,#ffd2d7 0,transparent 47%),radial-gradient(ellipse at 12% 100%,#f39468 0,transparent 54%),radial-gradient(ellipse at 95% 95%,#90cee5 0,transparent 54%),radial-gradient(ellipse at 53% 53%,#7f8bab66 0,transparent 50%),linear-gradient(145deg,#86b8ef,#c4d4ea 44%,#e2bdc5 78%);
+ background-attachment:fixed;color:var(--material-ink)
+}
+.workbench-shell.view-agent:has(.portfolio-home) .app-sidebar{background:#ffffff12;border:0;box-shadow:none;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.workbench-shell.view-agent:has(.portfolio-home) .app-topbar{background:#ffffff15;border:0;box-shadow:none;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.workbench-shell.view-agent:has(.portfolio-home) .app-sidebar .nav-stack .nav-button{color:#314963;border:0;box-shadow:none;border-radius:10px}
+.workbench-shell.view-agent:has(.portfolio-home) .app-sidebar .nav-stack .nav-button:hover{background:#ffffff35}
+.workbench-shell.view-agent:has(.portfolio-home) :is(.sidebar-status,.sidebar-more>summary,.brand-block div>span){color:#3e526b;border-color:#ffffff35}
+.workbench-shell.view-agent .portfolio-home{padding-top:20px}
+.workbench-shell.view-agent .portfolio-home .agent-heading{margin-bottom:16px}
+.workbench-shell.view-agent .portfolio-home .agent-heading h1{color:#243b55}
+.workbench-shell.view-agent .portfolio-home .agent-heading>div>span{color:#405874}
+.workbench-shell.view-agent .portfolio-home :is(.business-overview,.portfolio,.dashboard-rhythm){background:#ffffff9e;border:1px solid #ffffff38;border-radius:11px;box-shadow:none;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);overflow:hidden}
+.workbench-shell.view-agent .portfolio-home .dashboard-financial-wrap{margin-bottom:10px}
+.workbench-shell.view-agent .portfolio-home .portfolio{padding:20px;margin-bottom:10px}
+.workbench-shell.view-agent .portfolio-home .business-toolbar{padding:15px 20px 0}
+.workbench-shell.view-agent .portfolio-home .business-grid{padding:14px 20px;gap:18px;min-height:112px}
+.workbench-shell.view-agent .portfolio-home .business-achievement{background:transparent;border:0;border-radius:0;box-shadow:none;min-height:100px}
+.workbench-shell.view-agent .portfolio-home .achievement-arc{filter:none}
+.workbench-shell.view-agent .portfolio-home .achievement-arc circle{stroke:#cad8eb}
+.workbench-shell.view-agent .portfolio-home .achievement-arc circle+circle{stroke:#3568ee}
+.workbench-shell.view-agent .portfolio-home .business-achievement>strong{color:#2b4b75}
+.workbench-shell.view-agent .portfolio-home .business-number{border:0;border-radius:7px;padding:0 20px;background:#ffffff25}
+.workbench-shell.view-agent .portfolio-home .business-number:hover{background:#ffffff70}
+.workbench-shell.view-agent .portfolio-home .business-number>strong{color:#253b53;font-weight:500;font-size:33px}
+.workbench-shell.view-agent .portfolio-home .business-cash-values strong{color:#253b53;font-weight:500}
+.workbench-shell.view-agent .portfolio-home .business-status{background:#ffffff20;border-top:1px solid #ffffff45;color:#425871}
+.workbench-shell.view-agent .portfolio-home .business-status button{color:#5c4d63}
+.workbench-shell.view-agent .portfolio-home .business-periods{background:#ffffff50;box-shadow:none;border-radius:7px}
+.workbench-shell.view-agent .portfolio-home .business-periods button[aria-pressed=true]{background:#3568ee;color:#fff;box-shadow:none}
+.workbench-shell.view-agent .portfolio-home .cash-composition{background:#d5e0ef;height:6px}
+.workbench-shell.view-agent .portfolio-home .cash-composition>i{background:#3568ee}
+.workbench-shell.view-agent .portfolio-home .cash-composition>i+i{background:#b7cbee}
+.workbench-shell.view-agent .portfolio-home .business-cash-values i{background:#3568ee}
+.workbench-shell.view-agent .portfolio-home .business-cash-values>div+div i{background:#9eb8e6}
+.workbench-shell.view-agent .portfolio-home .portfolio-analytics{background:transparent;border:0;border-bottom:1px solid #ffffff75;border-radius:0;padding:4px 0 22px;box-shadow:none;margin-bottom:18px}
+.workbench-shell.view-agent .portfolio-home .review-analysis{border-color:#ffffff90}
+.workbench-shell.view-agent .portfolio-home .review-ring{box-shadow:none}
+.workbench-shell.view-agent .portfolio-home .review-ring>div{background:#eaf0f7;box-shadow:none}
+.workbench-shell.view-agent .portfolio-home .stage-bars>button[aria-pressed=true]{background:#ffffff45;box-shadow:none}
+.workbench-shell.view-agent .portfolio-home .stage-bars>button:hover{background:#ffffff55}
+.workbench-shell.view-agent .portfolio-home .stage-bars>button>div{border-color:#b4c7de66;background:repeating-linear-gradient(to top,transparent 0,transparent 27px,#a6bed429 28px)}
+.workbench-shell.view-agent .portfolio-home .portfolio-card{background:#ffffff66!important;border:1px solid #ffffff48!important;box-shadow:none;border-radius:9px}
+.workbench-shell.view-agent .portfolio-home .portfolio-card:hover,.workbench-shell.view-agent .portfolio-home .portfolio-card[aria-expanded=true]{background:#ffffffad!important;border-color:#8eafe7!important;box-shadow:none}
+.workbench-shell.view-agent .portfolio-home .portfolio-agent-launch{background:#ffffff8a;border:1px solid #ffffff50;box-shadow:none;color:#274764}
+.workbench-shell.view-agent .portfolio-home .portfolio-tools label{background:#ffffff5c;border-color:#ffffff60;box-shadow:none}
+.workbench-shell.view-agent .portfolio-home .portfolio-tools button[aria-pressed=true]{background:#3568ee;color:#fff}
+.workbench-shell.view-agent .portfolio-home .portfolio-detail{background:#f6f9fce8;border-color:#ffffff9e}
+.workbench-shell.view-agent .portfolio-home .agent-panel{background:#f4f8fbed;border:1px solid #ffffff95;box-shadow:0 10px 40px #213d6120;border-radius:12px;backdrop-filter:blur(24px)}
+.workbench-shell.view-agent .portfolio-home .agent-panel-head{background:#ffffff30;border-color:#cbd9e84a}
+.workbench-shell.view-agent .portfolio-home .agent-compose{background:#ffffffe0;border-color:#d4e0ed;box-shadow:none}
+.workbench-shell.view-agent .portfolio-home .agent-compose:focus-within{background:#fff;border-color:#759deb;box-shadow:0 0 0 2px #3568ee12}
+.workbench-shell.view-agent .portfolio-home :is(.portfolio-analytics header>span,.portfolio-list-heading>span,.portfolio-foot,.portfolio>header small,.review-ring span){color:#4b617b}
+
+.portfolio-home .calendar-occupancy{margin:16px 0 0;padding:14px 0 0;border-top:1px solid #63738b20;color:#566478}
+.portfolio-home .calendar-occupancy-head{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:8px}
+.portfolio-home .calendar-occupancy-head>span{margin-left:auto;font-size:11px;color:#6b7787}
+.portfolio-home .calendar-occupancy-row{display:flex;align-items:center;gap:12px;padding:9px 10px;margin:4px 0;border-radius:7px;background:#68788c09;font-size:12px}
+.portfolio-home .calendar-occupancy-row time{font-variant-numeric:tabular-nums;flex-shrink:0;font-size:11px}
+.portfolio-home .calendar-occupancy-row>span{flex:1}
+.portfolio-home .calendar-occupancy summary{font-size:12px;cursor:pointer;padding:8px}
+
+.workbench-shell.view-agent .portfolio-home .has-calendar .timeline-empty{display:grid;grid-template-columns:1fr auto;gap:6px 16px;padding:12px 0;min-height:0;text-align:left}
+.workbench-shell.view-agent .portfolio-home .has-calendar .timeline-empty>svg{display:none}
+.workbench-shell.view-agent .portfolio-home .has-calendar .timeline-empty>p{grid-column:1;max-width:none;font-size:11px}
+.workbench-shell.view-agent .portfolio-home .has-calendar .timeline-empty>button{grid-column:2;grid-row:1/3}
+
+/* Keep header popovers above backdrop-filtered dashboard surfaces. */
+.workbench-shell.view-agent:has(.portfolio-home) .app-topbar{position:relative;z-index:80}
+.workbench-shell.view-agent:has(.portfolio-home) .notification-panel{background:#f9fbff;border-color:#dbe3ef;box-shadow:0 16px 48px #20365430;color:#283b53}
+.workbench-shell.view-agent:has(.portfolio-home) .notification-panel button{color:#2856c7}
+.workbench-shell.view-agent:has(.portfolio-home) .notification-panel button:hover{background:#e8effd}
+.workbench-shell.view-agent:has(.portfolio-home) .notification-toolbar{background:#edf2fa}
+.workbench-shell.view-agent:has(.portfolio-home) .notification-list article.is-unread{background:#f9fbff;border-left-color:#3568ee}
+.workbench-shell.view-agent:has(.portfolio-home) .notification-panel footer{background:#f1f5fb}
+
+/* Reading order: four measures, two analytical views, calendar, then drill-down. */
+.workbench-shell.view-agent .portfolio-home{--dashboard-quiet:#53657c}
+.workbench-shell.view-agent .portfolio-home :is(.business-overview,.portfolio){background:transparent;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:visible;padding:0}
+.workbench-shell.view-agent .portfolio-home .business-toolbar{padding:0 0 12px;min-height:34px}
+.workbench-shell.view-agent .portfolio-home .business-grid{grid-template-columns:repeat(4,minmax(0,1fr));padding:0;gap:10px;min-height:150px}
+.workbench-shell.view-agent .portfolio-home .business-grid>:is(.business-achievement,.business-number){border:0;border-radius:12px;background:#ffffffe0;padding:18px;min-width:0;min-height:150px;box-shadow:inset 0 1px 0 #fff;display:flex;flex-direction:column;text-align:left;align-items:stretch;justify-content:flex-start}
+.workbench-shell.view-agent .portfolio-home .business-number:hover{background:#fff}
+.workbench-shell.view-agent .portfolio-home .business-achievement{position:relative}
+.workbench-shell.view-agent .portfolio-home .achievement-arc{width:55px;height:55px;left:auto;right:14px;top:50px}
+.workbench-shell.view-agent .portfolio-home .business-achievement>strong{font-size:30px;line-height:1.2;margin:16px 54px 10px 0;font-weight:550}
+.workbench-shell.view-agent .portfolio-home .business-achievement>svg+div{font-size:11px;justify-content:flex-start;gap:5px}
+.workbench-shell.view-agent .portfolio-home .business-official{display:none}
+.workbench-shell.view-agent .portfolio-home .business-number>strong{font-size:30px;line-height:1.2;margin:16px 0 10px;font-weight:550;letter-spacing:-.025em}
+.workbench-shell.view-agent .portfolio-home .business-number>span{font-size:11px;color:#435873;display:flex;align-items:center;justify-content:space-between}
+.workbench-shell.view-agent .portfolio-home .business-number p{font-size:10px;color:#53657c;margin:0;margin-top:auto;line-height:1.6}
+.workbench-shell.view-agent .portfolio-home .business-achievement>p{margin:0;margin-top:auto;font-size:10px;color:#53657c;line-height:1.6}
+.workbench-shell.view-agent .portfolio-home .business-achievement>p>span{display:inline;margin-left:9px}
+.workbench-shell.view-agent .portfolio-home .business-status{background:transparent;border:0;padding:8px 0 0;font-size:10px;color:#3f536c}
+.workbench-shell.view-agent .portfolio-home .business-detail{background:#f7faff;border-radius:12px;margin-top:10px}
+.workbench-shell.view-agent .portfolio-home .dashboard-financial-wrap{margin-bottom:24px}
+.workbench-shell.view-agent .portfolio-home .portfolio>header{margin-bottom:12px}
+.workbench-shell.view-agent .portfolio-home .portfolio-analytics{grid-template-columns:minmax(0,1.8fr) minmax(0,1fr);gap:10px;padding:0;border:0;margin-bottom:12px}
+.workbench-shell.view-agent .portfolio-home :is(.stage-analysis,.review-analysis){background:#ffffffd9;border:0;border-radius:12px;padding:20px;min-width:0}
+.workbench-shell.view-agent .portfolio-home .stage-bars{height:160px;gap:14px;padding-top:15px}
+.workbench-shell.view-agent .portfolio-home .stage-bars>button>div{height:104px;background:none;border-color:#c6d2e4}
+.workbench-shell.view-agent .portfolio-home .review-visual{gap:18px;padding-top:28px}
+.workbench-shell.view-agent .portfolio-home .review-ring{width:104px;height:104px;padding:10px}
+.workbench-shell.view-agent .portfolio-home .review-ring>div{background:#f3f7fc}
+.workbench-shell.view-agent .portfolio-home .dashboard-rhythm{padding:18px 20px;background:#ffffffe0;border:0;border-radius:12px;margin-bottom:12px;box-shadow:inset 0 1px 0 #fff}
+.workbench-shell.view-agent .portfolio-home .portfolio-project-list{background:#ffffffc9;border-radius:12px;padding:20px}
+.workbench-shell.view-agent .portfolio-home .portfolio-card{background:transparent!important;border:0!important;border-radius:6px;padding:9px 0;box-shadow:none}
+.workbench-shell.view-agent .portfolio-home .portfolio-card:hover,.workbench-shell.view-agent .portfolio-home .portfolio-card[aria-expanded=true]{background:#ffffffb0!important}
+.workbench-shell.view-agent .portfolio-home .portfolio-list-heading{margin-bottom:20px}
+.workbench-shell.view-agent .portfolio-home .calendar-occupancy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px;padding-top:10px}
+.workbench-shell.view-agent .portfolio-home .calendar-occupancy-head{grid-column:1/-1;margin:0 0 2px}
+.workbench-shell.view-agent .portfolio-home .calendar-occupancy-row{display:grid;grid-template-columns:1fr auto;gap:6px;padding:10px 12px;margin:0;background:#dbe5f44a}
+.workbench-shell.view-agent .portfolio-home .calendar-occupancy-row time{grid-column:1/-1;color:#52657d}
+.workbench-shell.view-agent .portfolio-home .calendar-occupancy-row>span{font-size:11px;line-height:1.6}
+.workbench-shell.view-agent .portfolio-home .calendar-occupancy details{grid-column:1/-1}
+.workbench-shell.view-agent .portfolio-home :is(button,a,input,select,textarea):focus-visible{outline:2px solid #2758d5;outline-offset:3px}
+@media(max-width:1350px){
+ .workbench-shell.view-agent .portfolio-home{padding-inline:20px}
+ .workbench-shell.view-agent .portfolio-home .business-grid>:is(.business-achievement,.business-number){padding:14px}
+ .workbench-shell.view-agent .portfolio-home .business-number>strong,.workbench-shell.view-agent .portfolio-home .business-achievement>strong{font-size:27px}
+ .workbench-shell.view-agent .portfolio-home .achievement-arc{width:45px;height:45px;right:9px}
+ .workbench-shell.view-agent .portfolio-home .review-visual{gap:12px}
+ .workbench-shell.view-agent .portfolio-home .review-ring{width:86px;height:86px}
+ .workbench-shell.view-agent .portfolio-home .portfolio-analytics{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr)}
+}
+.portfolio-filter-feedback{display:flex;align-items:center;gap:16px;padding:10px 14px;margin-bottom:12px;border-radius:8px;background:#edf3ff;color:#2e508b;font-size:12px}.portfolio-filter-feedback>span{margin-right:auto}.portfolio-filter-feedback button{color:#214faf;font-size:12px}.timeline-global-scope{font-size:10px;font-weight:400;color:#52657d;margin-left:8px}.portfolio-list-heading{scroll-margin-top:18px}

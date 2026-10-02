@@ -1,0 +1,206 @@
+/* One quiet desktop system across the approved homepage and business routes. */
+:root,.workbench-shell.agent-shell{
+ color-scheme:dark;
+ --app-bg:#07080b;--app-sidebar:#0b0c10;--app-surface:#111217;--app-surface-raised:#15171e;--app-surface-soft:#171922;
+ --app-border:#282b36;--app-border-strong:#496378;--app-text:#f1f2f6;--app-text-muted:#a5a9b8;--app-text-subtle:#a5a9b8;
+ --app-accent:#8fc9ee;--app-accent-strong:#8fc9ee;--app-accent-ink:#111217;--app-info:#8fc9ee;
+ --app-success:#9ac8b2;--app-warning:#d4b58b;--app-danger:#eea2ac;
+ --app-success-bg:#17241f;--app-warning-bg:#272119;--app-danger-bg:#2b1b23;
+ --app-intelligence-bg:#111217;--app-intelligence-text:#f1f2f6;--app-intelligence-muted:#a5a9b8;--app-intelligence-line:#282b36;--app-intelligence-accent:#8fc9ee;
+}
+body{background:#07080b;color:var(--app-text)}
+.workbench-shell.agent-shell{background:#07080b!important;background-image:none!important;grid-template-columns:174px minmax(0,1fr)!important}
+.workbench-shell.agent-shell .app-body{background:#07080b!important}
+.workbench-shell.agent-shell .app-sidebar{width:174px;background:#0b0c10!important;border-right:1px solid #282b36!important;padding:28px 10px;backdrop-filter:none;-webkit-backdrop-filter:none}
+.workbench-shell.agent-shell .brand-block{padding-inline:4px;gap:8px}
+.workbench-shell.agent-shell .brand-block strong{font-size:15px;color:var(--app-text)}
+.workbench-shell.agent-shell .brand-block div>span{font-size:11px;color:var(--app-text-muted)}
+.workbench-shell.agent-shell .brand-symbol{background:#111217;border:1px solid #282b36;color:var(--app-accent);box-shadow:0 2px 6px #00000033}
+.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button{min-height:46px;padding-inline:10px;gap:10px;font-size:12px;color:var(--app-text-muted);border:0;background:transparent}
+.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button:hover{background:#171922;color:var(--app-text)}
+.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button.is-active{background:#111217;color:#8fc9ee;box-shadow:0 2px 8px #00000033}
+.workbench-shell.agent-shell .app-sidebar .nav-button>svg{width:20px;height:20px;color:#8fc9ee}
+.workbench-shell.agent-shell .app-sidebar .nav-button.is-active>svg{color:#8fc9ee}
+.workbench-shell.agent-shell .app-sidebar .nav-button.is-active::before{background:#8fc9ee}
+.workbench-shell.agent-shell :is(.sidebar-more>summary,.sidebar-status,.sidebar-status strong,.sidebar-status span){color:var(--app-text-muted);border-color:var(--app-border)}
+.workbench-shell.agent-shell .app-topbar{background:#0b0c10!important;border-bottom:1px solid #282b36;min-height:49px;padding-inline:20px;backdrop-filter:none;-webkit-backdrop-filter:none;color:var(--app-text-muted)}
+.workbench-shell.agent-shell .app-topbar strong{color:var(--app-text)}
+.workbench-shell.agent-shell .app-topbar .plain-action{color:var(--app-text-muted);background:transparent;border:0!important}
+.workbench-shell.agent-shell .app-topbar .plain-action:hover{background:#171922!important;color:var(--app-text)}
+.workbench-shell.agent-shell .global-agent-link{color:#8fc9ee}
+.workbench-shell.agent-shell:not(.view-agent) .app-main{background:#07080b!important;padding:24px 24px 40px}
+.workbench-shell.agent-shell :is(.page-header,.workspace-overview-heading,.discovery-heading,.iv-toolbar){border-color:var(--app-border);padding-bottom:18px}
+.workbench-shell.agent-shell :is(.page-header h1,.workspace-overview-heading h1,.discovery-heading h1){font-size:24px;font-weight:600;letter-spacing:-.025em}
+.workbench-shell.agent-shell :is(.page-subtitle,.workspace-overview-heading small,.page-header>p,.page-header>div>p){font-size:12px;line-height:1.7;color:var(--app-text-muted)}
+.workbench-shell.agent-shell :is(.plain-action,.workspace-shortcuts button){background:#111217;border:1px solid var(--app-border);color:var(--app-text-muted);box-shadow:none;border-radius:7px}
+.workbench-shell.agent-shell :is(.plain-action,.workspace-shortcuts button):hover{background:#171922;border-color:#385169;color:var(--app-text)}
+.workbench-shell.agent-shell :is(.primary-button,.sync-primary,.analysis-adopt){background:var(--app-accent);color:#111217;border-color:var(--app-accent);box-shadow:none}
+.workbench-shell.agent-shell :is(input,select,textarea){background:#111217;color:var(--app-text);border-color:var(--app-border);accent-color:var(--app-accent)}
+.workbench-shell.agent-shell :is(input,textarea)::placeholder{color:var(--app-text-muted)}
+.workbench-shell.agent-shell :is(.native-field input,.native-field select,.native-field textarea,.workspace-project-search input,.file-filters input,.file-filters select){background:#111217;border:1px solid var(--app-border);box-shadow:none;border-radius:7px}
+.workbench-shell.agent-shell :is(button,a,summary,input,select,textarea):focus-visible{outline:2px solid #8fc9ee;outline-offset:3px}
+.workbench-shell.agent-shell :is(.customer-directory-mode,.workspace-section-tabs,.pricing-tabs,.file-state-tabs,.attention-filters,.signal-filter,.iv-tabs)>button[aria-pressed=true],
+.workbench-shell.agent-shell :is(.pricing-tabs,.workspace-section-tabs)>button[aria-selected=true]{background:#202a3b;color:#8fc9ee;border:1px solid #385169;box-shadow:none}
+.workbench-shell.agent-shell :is(.concept-table,.project-overview-table,.discovery-lead-card,.pricing-surface,.digest-card,.aihot-card,.report-card,.reminder-system-records,.customer-account-work,.customer-meeting,.report-reader){background:#111217;border:1px solid var(--app-border);border-radius:12px;box-shadow:0 2px 8px #00000033}
+.workbench-shell.agent-shell .concept-table .workbench-table-head{background:#171922;color:var(--app-text-muted);font-size:12px;padding:12px 18px;border-color:var(--app-border)}
+.workbench-shell.agent-shell .concept-table .workbench-table-row{padding:18px;min-height:96px;border-color:var(--app-border)}
+.workbench-shell.agent-shell .concept-table .workbench-table-row:hover{background:#15171e}
+.workbench-shell.agent-shell .concept-table .project-name-link strong{font-size:14px;font-weight:550;line-height:1.6}
+.workbench-shell.agent-shell .concept-table :is(.project-name-link>span,.project-row-meta,.project-overview-evidence-date){font-size:11px;color:var(--app-text-muted)}
+.workbench-shell.agent-shell .project-avatar{background:#0b0c10;color:#8fc9ee;border:1px solid var(--app-border);border-radius:9px}
+.workbench-shell.agent-shell .project-state-chip{background:#171922;color:#a5a9b8;font-size:11px}
+.workbench-shell.agent-shell .project-state-chip[data-tone=waiting]{background:var(--app-warning-bg);color:var(--app-warning)}
+.workbench-shell.agent-shell .project-state-chip[data-tone=warning]{background:var(--app-danger-bg);color:var(--app-danger)}
+.workbench-shell.agent-shell .customer-directory{background:#111217;border:1px solid var(--app-border);box-shadow:0 2px 8px #00000033}
+.workbench-shell.agent-shell .customer-directory-row{padding-block:18px}
+.workbench-shell.agent-shell .project-detail-redesign{--detail-bg:#07080b;--detail-paper:#111217;--detail-line:#282b36;--detail-text:#f1f2f6;--detail-muted:#a5a9b8;--detail-accent:#8fc9ee;--detail-tint:#171922}
+.workbench-shell.agent-shell .project-detail-canvas{background:#111217;border:1px solid var(--app-border)}
+.workbench-shell.agent-shell :is(.project-judgement,.boundary-note,.snapshot-warning){background:#171922;border:1px solid var(--app-border);border-radius:8px}
+.workbench-shell.agent-shell .reminder-group .queue-list{background:#111217;border:1px solid var(--app-border);border-radius:10px}
+.workbench-shell.agent-shell .reminder-group>header{font-size:14px;border-color:var(--app-border)}
+.workbench-shell.agent-shell .reminder-group>header span{color:var(--app-text-muted);font-size:12px}
+.workbench-shell.agent-shell .reminder-audit-trail{background:#111217;border:1px solid var(--app-border);border-radius:10px}
+.workbench-shell.agent-shell .reminder-audit-trail>header{background:#171922;border-color:var(--app-border)}
+.workbench-shell.agent-shell .reminder-audit-trail>div{border-color:var(--app-border)}
+.workbench-shell.agent-shell .customer-files{background:transparent}
+.workbench-shell.agent-shell .file-folder-list{gap:12px}
+.workbench-shell.agent-shell .customer-files .file-folder{background:#111217;color:var(--app-text);border:1px solid var(--app-border);padding:18px 20px;min-height:90px;box-shadow:0 2px 8px #00000033}
+.workbench-shell.agent-shell .customer-files .file-folder:hover{background:#15171e;border-color:#385169;box-shadow:0 2px 8px #00000033}
+.workbench-shell.agent-shell .file-folder b{font-size:15px;font-weight:550}
+.workbench-shell.agent-shell .file-folder :is(small,svg),.workbench-shell.agent-shell .file-breadcrumb{color:var(--app-text-muted)}
+.workbench-shell.agent-shell .file-folder>svg:first-child{width:26px;height:26px;color:#8fc9ee}
+.workbench-shell.agent-shell .file-breadcrumb button{font-size:12px;color:#8fc9ee}
+.workbench-shell.agent-shell .file-scope{font-size:12px;color:var(--app-text-muted)}
+.workbench-shell.agent-shell .file-list>article{background:#111217;border:1px solid var(--app-border);border-radius:10px;box-shadow:0 2px 8px #00000033}
+.workbench-shell.agent-shell .file-list .file-visual{background:#171922;color:#8fc9ee;border:1px solid var(--app-border)}
+.workbench-shell.agent-shell .file-list :is(p,small){color:var(--app-text-muted);font-size:12px;line-height:1.7}
+.workbench-shell.agent-shell .file-review{background:#171922;color:var(--app-text);border-color:var(--app-border)}
+.workbench-shell.agent-shell .file-review p{color:var(--app-text-muted);font-size:12px}
+.workbench-shell.agent-shell .file-detail{padding:20px;background:#111217;border:1px solid var(--app-border);border-radius:10px}
+.workbench-shell.agent-shell .file-detail>h3{font-size:18px;line-height:1.6;overflow-wrap:anywhere}
+.workbench-shell.agent-shell .file-detail :is(a,summary){color:#8fc9ee;font-size:13px}
+.workbench-shell.agent-shell .notification-panel{background:#090a0e;color:var(--app-text);border-color:var(--app-border)}
+.workbench-shell.agent-shell .notification-panel button{color:#8fc9ee}
+.workbench-shell.agent-shell .notification-toolbar,.workbench-shell.agent-shell .notification-panel footer{background:#171922}
+.workbench-shell.agent-shell .notification-list article.is-unread{background:#15171e;border-left-color:#8fc9ee}
+:is(dialog,[role=dialog],.drawer-panel,.astryx-dialog){color-scheme:dark;background:#090a0e;color:var(--app-text);border-color:var(--app-border);box-shadow:0 20px 64px #00000033}
+:is(dialog,[role=dialog]) :is(input,select,textarea){background:#111217;color:var(--app-text);border-color:var(--app-border)}
+.workspace-redesign .workspace-project-sheet.project-detail-drawer{background:#07080b;border-color:#282b36;box-shadow:0 20px 64px #00000033}
+.workspace-redesign .workspace-project-sheet.project-detail-drawer::backdrop{background:#00000033;backdrop-filter:blur(3px)}
+.workspace-redesign .workspace-project-sheet .drawer-header{background:#090a0e;border-color:#282b36}
+.workspace-redesign .workspace-project-sheet .drawer-body{background:#07080b}
+@media(max-width:1350px){.workbench-shell.agent-shell:not(.view-agent) .app-main{padding-inline:20px}}
+@media(prefers-reduced-motion:reduce){.workbench-shell.agent-shell *{transition:none!important}}
+/* Keep directory controls above the files without four separate toolbar rows. */
+.workbench-shell.agent-shell .customer-files>header{margin-top:12px}
+.workbench-shell.agent-shell .customer-files>header h2{margin:0;font-size:15px}
+.workbench-shell.agent-shell .file-breadcrumb{margin:12px 0;min-height:24px}
+.file-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:start}
+.file-controls[hidden]{display:none!important}
+.workbench-shell.agent-shell .file-controls .file-filters{grid-column:1/-1;margin:0;min-width:0}
+.workbench-shell.agent-shell .file-controls .file-state-tabs{margin:0}
+.workbench-shell.agent-shell .file-controls .file-add-disclosure{margin:0;border:0;box-shadow:none;background:transparent;align-self:start;min-height:34px}
+.workbench-shell.agent-shell .file-controls .file-add-disclosure>summary{font-size:12px;padding:8px 10px;color:var(--app-text-muted);cursor:pointer}
+.workbench-shell.agent-shell .file-controls .file-add-disclosure[open]{grid-column:1/-1;border:1px solid var(--app-border);border-radius:8px;background:#111217}
+.workbench-shell.agent-shell .file-controls .file-add-disclosure[open] .file-add{padding:0 12px 8px}
+.workbench-shell.agent-shell .file-folder-list{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px}
+.workbench-shell.agent-shell .customer-files .file-folder{min-height:82px;padding:14px 16px;gap:12px}
+.workbench-shell.agent-shell .file-folder span{gap:5px}
+.workbench-shell.agent-shell .file-folder b{font-size:14px}
+.workbench-shell.agent-shell .file-folder small{line-height:1.6}
+.workbench-shell.agent-shell .project-detail-redesign .detail-stage-path .is-current i{color:var(--app-accent-ink)}
+:is(.ml-dialog,.project-leave-dialog,.project-archive-dialog,.discard-dialog)::backdrop{background:#00000033;backdrop-filter:blur(3px)}
+@media(max-width:1350px){.workbench-shell.agent-shell .file-folder-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Auxiliary tools share the same content origin and reading hierarchy. */
+.workbench-shell.agent-shell :is(.independent-pricing,.commercial-workspace,.graphite-performance,.communication-sync,.aihot-page,.material-library){width:100%;max-width:none;margin-inline:0}
+.workbench-shell.agent-shell .pricing-workspace{gap:20px}
+.workbench-shell.agent-shell .pricing-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid var(--app-border)}
+.workbench-shell.agent-shell .pricing-toolbar .pricing-tabs{padding:0;border:0;margin:0}
+.workbench-shell.agent-shell .pricing-toolbar>.plain-action{font-size:12px;flex-shrink:0}
+.workbench-shell.agent-shell .pricing-surface{padding:24px;gap:24px}
+.workbench-shell.agent-shell .pricing-result{background:var(--app-surface-soft);padding:24px;border-color:var(--app-border);border-radius:8px}
+.workbench-shell.agent-shell .pricing-result .status-chip{justify-self:start}
+.workbench-shell.agent-shell .pricing-result h2{font-size:32px;font-weight:600;font-variant-numeric:tabular-nums}
+.workbench-shell.agent-shell :is(.pricing-form,.iv-fields) .native-field>span{font-size:12px}
+.workbench-shell.agent-shell .aihot-page{padding:0 0 24px}
+.workbench-shell.agent-shell :is(.aihot-header,.sync-heading){align-items:flex-start;padding-bottom:18px;border-bottom:1px solid var(--app-border)}
+.workbench-shell.agent-shell :is(.aihot-header h1,.sync-heading h1,.ml-header h1){font-size:24px;font-weight:600;letter-spacing:-.025em}
+.workbench-shell.agent-shell :is(.aihot-header p,.sync-heading p:not(.eyebrow)){font-size:12px;line-height:1.7}
+.workbench-shell.agent-shell .aihot-eyebrow{letter-spacing:0;font-weight:500}
+.workbench-shell.agent-shell .aihot-tabs{gap:8px}
+.workbench-shell.agent-shell .aihot-tabs button{font-size:13px;padding:10px 16px;border-radius:7px 7px 0 0;border-bottom-width:2px}
+.workbench-shell.agent-shell .aihot-tabs button[aria-pressed=true]{color:var(--app-accent-strong);border-bottom-color:var(--app-accent);background:#202a3b}
+.workbench-shell.agent-shell :is(.aihot-card,.digest-card) h3{font-size:16px;line-height:1.65;font-weight:550}
+.workbench-shell.agent-shell :is(.aihot-card>p,.digest-item-summary){font-size:13px;line-height:1.8}
+.workbench-shell.agent-shell .aihot-tools form:focus-within{border-color:var(--app-accent);box-shadow:0 0 0 2px #8fc9ee1a}
+.workbench-shell.agent-shell .report-date-tabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:2px 2px 12px;gap:8px}
+.workbench-shell.agent-shell .report-date-tabs button{flex:0 0 auto;min-height:44px;font-size:12px;gap:4px}
+.workbench-shell.agent-shell .report-date-tabs button.is-active{background:#202a3b;color:var(--app-accent-strong);border-color:#385169}
+.workbench-shell.agent-shell .report-reader{gap:20px;padding:24px}
+.workbench-shell.agent-shell .report-reader h2{font-size:18px;line-height:1.65}
+.workbench-shell.agent-shell .report-reader h3{font-size:15px}
+.workbench-shell.agent-shell .report-reader article{line-height:1.85;max-width:78ch}
+.workbench-shell.agent-shell .invoice-vault>header.iv-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:20px;padding-bottom:20px}
+.workbench-shell.agent-shell .invoice-vault>header.iv-toolbar label{font-size:12px;color:var(--app-text-muted)}
+.workbench-shell.agent-shell .iv-upload{background:transparent;padding:0}
+.workbench-shell.agent-shell input[type=file]::file-selector-button{font:inherit;color:var(--app-accent-strong);background:#202a3b;border:0;border-radius:4px;padding:5px 8px;margin-right:8px;cursor:pointer}
+.workbench-shell.agent-shell .invoice-vault th{font-size:12px;color:var(--app-text-muted);background:var(--app-surface-raised)}
+.workbench-shell.agent-shell .invoice-vault td{font-size:13px;line-height:1.7}
+.workbench-shell.agent-shell .iv-reading>section{min-width:0}
+.workbench-shell.agent-shell .iv-reading iframe,.workbench-shell.agent-shell .iv-image{height:clamp(360px,60vh,650px);max-height:650px;border-radius:6px}
+.workbench-shell.agent-shell .iv-fields{gap:12px}
+.workbench-shell.agent-shell .iv-fields label{font-size:12px;color:var(--app-text-muted)}
+.workbench-shell.agent-shell .iv-detail>header strong{min-width:0;flex:1;overflow-wrap:anywhere}
+.workbench-shell.agent-shell :is(.performance-trend,.trend-values){color:var(--app-text)}
+.workbench-shell.agent-shell .performance-trend circle[tabindex]:focus-visible{outline:none;stroke:var(--app-accent-strong);stroke-width:2;fill:#8fc9ee1a}
+.workbench-shell.agent-shell :is(input,textarea)[readonly],:is(dialog,[role=dialog]) :is(input,textarea)[readonly]{background:var(--app-surface-soft);color:var(--app-text-muted)}
+.workbench-shell.agent-shell :is(.invoice-vault,.communication-sync,.commercial-workspace,.pricing-workspace,.material-library,.aihot-page) :is(button,input,select,textarea):disabled{opacity:1;background:var(--app-surface-soft);color:var(--app-text-muted);border-color:var(--app-border);cursor:not-allowed}
+:is(dialog,[role=dialog]) :is(button,a,summary,input,select,textarea):focus-visible{outline:2px solid var(--app-accent);outline-offset:3px}
+@media(max-width:1350px){.workbench-shell.agent-shell .invoice-vault>header.iv-toolbar{gap:12px}.workbench-shell.agent-shell .pricing-surface{padding:20px;gap:20px}}
+:is(dialog,[role=dialog]) .native-field :is(input,select,textarea):focus-visible{outline:2px solid var(--app-accent);outline-offset:3px}
+.workbench-shell.agent-shell input[type=file]:disabled::file-selector-button{color:var(--app-text-muted);background:var(--app-surface-soft);cursor:not-allowed}
+.workbench-shell.agent-shell :is(.invoice-vault,.communication-sync,.commercial-workspace,.pricing-workspace,.material-library,.aihot-page) button:disabled{background:#171922;border:1px solid var(--app-border)}
+.workbench-shell.agent-shell .aihot-tools input{border:0;background:transparent;box-shadow:none}
+.workbench-shell.agent-shell .aihot-tools input:focus-visible{outline:none}
+.workbench-shell.agent-shell .iv-preview-help{display:grid;gap:12px;padding:18px;background:var(--app-surface-soft);border-radius:8px}
+.workbench-shell.agent-shell .iv-preview-help a{color:var(--app-accent-strong);font-size:14px;font-weight:550;justify-self:start}
+.workbench-shell.agent-shell .iv-preview-help span{font-size:12px;line-height:1.7;color:var(--app-text-muted)}
+.workbench-shell.agent-shell .iv-pdf-preview{margin-top:16px}
+.workbench-shell.agent-shell .iv-pdf-preview summary{cursor:pointer;font-size:12px;padding:10px 0;color:var(--app-text-muted)}
+.iv-list-scope{border:0;padding:0;margin:0;min-width:0;display:grid;gap:16px}
+
+/* Navigation and controls share the homepage reading scale. */
+.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button{font-size:13px;border-radius:9px}
+.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button.is-active{box-shadow:0 1px 2px #00000033,0 4px 12px #00000033}
+.workbench-shell.agent-shell .app-topbar{font-size:12px}
+.workbench-shell.agent-shell .app-sidebar .sidebar-more>summary{font-size:12px}
+.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button.is-active{background:linear-gradient(110deg,#2b2e44,#181b27);color:#dce4fc;box-shadow:inset 0 1px 0 #ffffff08,0 0 18px #7c80d412}
+.workbench-shell.agent-shell .app-sidebar .nav-button.is-active>svg{color:#b7c8f1;filter:drop-shadow(0 0 5px #829fff55)}
+.workbench-shell.agent-shell .app-sidebar .nav-button.is-active::before{background:#a4b7ee;box-shadow:0 0 10px #829fff55}
+.workbench-shell.agent-shell .brand-symbol{background:#181b27;border-color:#ffffff0d;color:#b7c8f1}
+.workbench-shell.agent-shell .app-topbar{border-bottom-color:#ffffff0a}
+/* Text inherited from historical light selectors must follow the active system. */
+.workbench-shell.agent-shell :is(h1,h2,h3,h4,.nav-button,.nav-button>span,.app-topbar strong){color:var(--app-text)!important}
+.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button:not(.is-active),.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button:not(.is-active)>span{color:var(--app-text-muted)!important}
+.workbench-shell.agent-shell .app-sidebar .sidebar-more>summary{color:var(--app-text-muted)!important}
+.workbench-shell.agent-shell :is(.file-state-tabs,.customer-directory-mode,.workspace-section-tabs,.pricing-tabs,.attention-filters,.signal-filter,.iv-tabs)>button:not([aria-pressed=true]):not([aria-selected=true]){color:var(--app-text-muted)!important}
+.workbench-shell.agent-shell :is(.empty-state,.loading-state){color:var(--app-text-muted)!important}
+body:has(.workbench-shell.agent-shell){background:#07080b;color-scheme:dark}
+.workbench-shell.agent-shell.view-agent .app-topbar :is(strong,.plain-action,.astryx-button){color:var(--app-text-muted)!important}
+.workbench-shell.agent-shell.view-agent .app-topbar .plain-action:hover{background:#171922!important}
+.workbench-shell.agent-shell .app-sidebar .nav-stack .nav-button.is-active:hover{background:linear-gradient(110deg,#30334c,#202331)!important}
+.workbench-shell.agent-shell .notification-bell{background:#171922;color:#c4ccdf;border-color:#282b36}
+.project-notifications .notification-panel{background:#090a0e;color:#f1f2f6;border-color:#282b36;box-shadow:0 20px 64px #0008}
+.project-notifications .notification-panel :is(strong,li){color:#e0e4ee}
+.project-notifications .notification-panel :is(small,footer){color:#a5a9b8}
+.project-notifications .notification-panel button{color:#b6c8ed}
+.project-notifications :is(.notification-toolbar,.notification-panel footer){background:#15171e;border-color:#282b36;color:#a5a9b8}
+.project-notifications .notification-list article{background:#111217;border-color:#282b36}
+.project-notifications .notification-list article.is-unread{background:#15171e;border-left-color:#a4b7ee}
+body .project-notifications .notification-panel{background:#090a0e!important;color:#f1f2f6!important;border-color:#282b36!important}
+body .project-notifications :is(.notification-toolbar,.notification-panel footer){background:#15171e!important;border-color:#282b36!important;color:#a5a9b8!important}
+body .project-notifications .notification-list article{background:#111217!important;border-color:#282b36!important}
+body .project-notifications .notification-list article.is-unread{background:#15171e!important;border-left-color:#a4b7ee!important}
+body .project-notifications .notification-panel :is(strong,li){color:#e0e4ee!important}
+body .project-notifications .notification-panel small{color:#a5a9b8!important}
+body .project-notifications .notification-panel button{color:#b6c8ed!important}

@@ -1,0 +1,49 @@
+.project-story {color:var(--app-text);}
+.story-navigation {display:flex;gap:24px;border-bottom:1px solid var(--app-border);padding-bottom:14px;margin-bottom:22px;}
+.story-navigation button {color:var(--app-text-muted);border:0;background:transparent;font-size:13px;cursor:pointer;padding:0;}
+.story-navigation button:hover {color:var(--app-text-muted);}
+.story-customer-goal>div {display:flex;justify-content:space-between;color:var(--app-text-muted);font-size:12px;}
+.story-customer-goal h3 {font-size:21px;line-height:1.55;margin:10px 0 25px;font-weight:600;}
+.story-journey h3,.story-conversation h3 {font-size:15px;margin:0 0 14px;}
+.story-journey h3 {display:flex;justify-content:space-between;}
+.story-journey h3 small {font-size:11px;color:var(--app-text-muted);font-weight:400;}
+.story-milestones {display:grid;grid-template-columns:repeat(auto-fit,minmax(106px,1fr));gap:6px;}
+.story-milestones button {display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:left;background:transparent;border:0;border-top:2px solid var(--app-border);color:var(--app-text-muted);padding:10px 8px;cursor:pointer;}
+.story-milestones button[aria-pressed=true] {border-color:var(--app-border);color:var(--app-text);background:var(--app-surface-raised);}
+.story-milestones time {font-size:12px;}
+.story-milestones span {font-size:12px;line-height:1.5;}
+.story-milestone-detail {padding:12px 14px;border:1px solid var(--app-border);border-radius:0 0 8px 8px;}
+.story-milestone-detail p {font-size:13px;line-height:1.7;margin:0;}
+.story-evidence {margin-top:7px;color:var(--app-text-muted);font-size:11px;}
+.story-evidence summary {cursor:pointer;}
+.story-evidence blockquote {font-size:12px;line-height:1.7;margin:10px 0;padding-left:12px;border-left:2px solid var(--app-border);}
+.story-evidence small {overflow-wrap:anywhere;}
+.story-turn {display:flex;gap:18px;border-left:3px solid var(--app-border);padding:12px 16px;margin:20px 0 27px;background:var(--app-surface-raised);}
+.story-turn>span {font-size:12px;color:var(--app-text-muted);flex:0 0 84px;line-height:1.7;}
+.story-turn p {font-size:14px;line-height:1.7;margin:0;}
+.story-conversation-goal {font-size:14px;color:var(--app-text-muted);line-height:1.7;margin:0 0 14px;}
+.story-values {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.story-values article {padding:16px;background:var(--app-surface-soft);border:1px solid var(--app-border);border-radius:8px;}
+.story-value-number {font-size:11px;color:var(--app-text-muted);}
+.story-values h4 {font-size:15px;line-height:1.5;margin:8px 0;}
+.story-values p {font-size:12px;line-height:1.8;margin:0;color:var(--app-text-muted);}
+.story-talk-track {margin:16px 0 22px;font-size:13px;color:var(--app-text);}
+.story-talk-track>summary {cursor:pointer;}
+.story-talk-track>div {padding:18px 20px;background:var(--app-surface);margin-top:12px;}
+.story-talk-track p,.story-talk-track li {font-size:14px;line-height:1.85;}
+.story-talk-track span {font-size:11px;color:var(--app-text-muted);}
+.story-internal {border-top:1px solid var(--app-border);padding:15px 0 20px;font-size:12px;display:flex;gap:14px;color:var(--app-text-muted);}
+.story-internal strong {white-space:nowrap;font-weight:500;}
+.story-internal p {margin:0;line-height:1.7;}
+.project-story [id],.project-one-action {scroll-margin-top:16px;}
+.project-decision-drawer:has(.project-story) {width:min(1120px,calc(100vw - 255px))!important;}
+.project-decision-drawer:has(.project-story) .project-one-action h3 {font-size:18px;}
+.project-decision-drawer:has(.project-story) .project-one-action {padding:18px 20px;}
+/* A narrow desktop pane still needs a readable project dialog. */
+@media (max-width:760px) {
+  .project-decision-drawer:has(.project-story) {width:100vw!important;}
+  .project-decision-drawer .drawer-header {padding:18px;}
+  .project-decision-drawer .drawer-body {padding:18px;}
+  .story-values {grid-template-columns:minmax(0,1fr);}
+}
+.story-communication-type{display:inline-block;border:1px solid var(--app-border-strong);border-radius:5px;padding:3px 8px;color:var(--app-text-muted);font-size:12px;margin-bottom:5px}

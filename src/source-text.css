@@ -1,0 +1,6 @@
+.source-text { min-width: 0; }
+.source-text .source-body { max-width: 75ch; }
+.source-original, .source-file-info { margin-top: 16px; border-top: 1px solid var(--app-border); padding-top: 12px; color: var(--app-text-muted); font-size: 12px; overflow-wrap: anywhere; }
+.source-original summary, .source-file-info summary { cursor: pointer; padding: 5px 0; }
+.source-original pre { color: var(--app-text); }
+.source-text :focus-visible, .source-file-info :focus-visible { outline: 2px solid var(--app-accent); outline-offset: 3px; }

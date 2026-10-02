@@ -1,0 +1,10 @@
+import React,{useEffect,useState} from 'react';
+import {MessageSquare,FileText,Mic,Mail} from 'lucide-react';
+import {api} from './api.js';
+export function ProjectRecentChanges({projectId,refreshKey,pendingSynthesis=false,journey=[],onHistory}){
+ const [items,setItems]=useState([]),[error,setError]=useState('');
+ useEffect(()=>{let live=true;api.get('/api/communication-sync').then(data=>{if(live){setItems((data.digest?.groups||[]).filter(g=>g.project_id===projectId).flatMap(g=>g.items).sort((a,b)=>(b.business_date||'').localeCompare(a.business_date||'')));setError('');}}).catch(()=>{if(live)setError('近期沟通暂未读到');});return()=>{live=false;};},[projectId,refreshKey]);
+ const nodes=items.length?items:[...journey].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map((x,i)=>({...x,id:`story-${i}`,business_date:x.date,summaries:[x.summary],fromJudgement:true}));
+ const render=item=>{const Icon=({recording:Mic,email:Mail,document:FileText})[item.kind]||MessageSquare;return <li key={item.id}><i className="timeline-dot"/><time>{item.business_date||'日期待核'}</time><details><summary>{item.title||item.summaries?.[0]}</summary><p>{item.summaries?.[0]||item.title}</p>{item.summaries?.slice(1).map((s,i)=><p key={i}>{s}</p>)}<small>{item.evidence?.quote||item.title}</small>{item.fromJudgement&&<button onClick={onHistory}>查看节点与原文 ↗</button>}</details><span className="timeline-source"><Icon size={15}/>{item.fromJudgement?'依据':item.communication?.our_message?'我方发出':({recording:'录音',email:'邮件',document:'文件'})[item.kind]||'聊天'}</span></li>;};
+ return <section className="project-recent-changes component-timeline" aria-label="近期沟通带来的变化"><header><h3>关键进程</h3><span>{pendingSynthesis?'新沟通 · 尚待综合':items.length?'来自已归档沟通':'来自已有项目判断'}</span></header>{error?<p role="status">{error}</p>:nodes.length?<><ol>{nodes.slice(0,3).map(render)}</ol>{nodes.length>3&&<details><summary>更多进程 · {nodes.length-3}</summary><ol>{nodes.slice(3).map(render)}</ol></details>}</>:<p className="component-empty">当前归档范围没有本项目的近期沟通节点</p>}</section>;
+}

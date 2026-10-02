@@ -1,0 +1,27 @@
+{
+  "knowledge_root": "",
+  "workbench_url": "http://127.0.0.1:8766",
+  "lark_cli": "",
+  "local_roots": [],
+  "chats": [],
+  "chat_keywords": [],
+  "mail_keywords": [],
+  "documents": [],
+  "search_minutes": true,
+  "transcribe": true,
+  "asr_python": "",
+  "asr_model": "",
+  "max_items_per_run": 120,
+  "max_file_bytes": 500000000,
+  "model_timeout": 180,
+  "refresh_timeout": 1800,
+  "prior_manifests": [],
+  "document_baselines": [],
+  "classification_effort": "medium",
+  "wechat": {
+    "enabled": false
+  },
+  "tencent_meeting": {
+    "enabled": false
+  }
+}

@@ -1,0 +1,41 @@
+.project-decision-drawer {width:min(880px,72vw)!important;}
+.project-decision-drawer .drawer-body {padding:24px 32px 40px;}
+.project-decision-drawer .drawer-header {padding:20px 32px;}
+.project-decision-heading {display:flex;align-items:center;gap:12px;font-size:12px;color:var(--app-text-muted);margin-bottom:18px;}
+.project-stage-tag {border:1px solid var(--app-border);border-radius:20px;padding:5px 12px;color:var(--app-text);background:var(--app-surface-raised);}
+.project-decision-context {display:grid;grid-template-columns:1.35fr 1fr;gap:22px;margin-bottom:24px;}
+.project-decision-context section>span {font-size:12px;color:var(--app-text-muted);}
+.project-decision-context p {font-size:14px;line-height:1.75;margin:7px 0 0;color:var(--app-text);}
+.project-decision-context section+section {border-left:1px solid var(--app-border);padding-left:22px;}
+.project-one-action {padding:22px 24px;background:var(--app-surface-raised);border:1px solid var(--app-border);border-radius:12px;margin-bottom:10px;}
+.project-action-kicker {font-size:12px;color:var(--app-text-muted);font-weight:650;letter-spacing:.08em;}
+.project-one-action h3 {font-size:22px;line-height:1.55;color:var(--app-text);margin:10px 0 20px;font-weight:650;}
+.project-check-actions {display:flex;gap:12px;margin-bottom:13px;}
+.project-check-actions button {padding:12px 24px;border:1px solid var(--app-border);border-radius:8px;background:var(--app-surface);color:var(--app-text);cursor:pointer;font-size:15px;}
+.project-check-actions button.primary-button {background:var(--app-surface-raised);color:var(--app-text);border-color:var(--app-border);font-weight:650;}
+.project-check-actions button:disabled {opacity:.45;cursor:default;}
+.project-one-action>small {font-size:11px;line-height:1.6;color:var(--app-text-muted);display:block;}
+.project-one-action.is-done {background:var(--app-surface-soft);border-color:var(--app-border);}
+.project-one-action.is-done h3 {font-size:18px;color:var(--app-text-muted);margin-bottom:10px;}
+.project-execution-receipt {display:flex;justify-content:space-between;gap:18px;align-items:center;font-size:12px;color:var(--app-text-muted);padding:8px 0 16px;}
+.project-execution-receipt strong {font-weight:500;}
+.project-execution-receipt p {margin:4px 0;font-size:12px;}
+.project-execution-receipt button {border:0;background:transparent;text-decoration:underline;color:var(--app-text-muted);white-space:nowrap;cursor:pointer;}
+.project-feedback-notice {font-size:13px;color:var(--app-text);}
+.project-recent-changes {margin:26px 0 20px;}
+.project-recent-changes h3 {font-size:15px;margin:0 0 12px;color:var(--app-text);display:flex;justify-content:space-between;}
+.project-recent-changes h3 small {font-size:11px;color:var(--app-text-muted);font-weight:400;}
+.project-recent-changes article {padding:12px 0;border-bottom:1px solid var(--app-border);}
+.project-recent-changes article>div {display:flex;justify-content:space-between;font-size:11px;color:var(--app-text-muted);}
+.project-recent-changes article p {font-size:13px;line-height:1.7;margin:6px 0 0;color:var(--app-text-muted);}
+.project-recent-changes details {margin-top:12px;font-size:12px;color:var(--app-text-muted);}
+.project-support-details,.project-manual-history {border-top:1px solid var(--app-border);padding:17px 0;font-size:13px;color:var(--app-text-muted);}
+.project-support-details>summary,.project-manual-history>summary {cursor:pointer;}
+.project-manual-history .round-surface {margin-top:16px;}
+.project-stage-filter {margin:0;font-size:12px;color:var(--app-text-muted);}
+.project-stage-filter>summary {cursor:pointer;padding:6px 0;}
+.project-overview-table .overview-next-cell p {color:var(--app-text);font-weight:550;}
+.project-overview-table .overview-blocker-cell p {font-size:13px;color:var(--app-text-muted);}
+.project-overview-table .project-overview-head,.project-overview-table .project-overview-row {grid-template-columns:minmax(250px,1.1fr) 120px minmax(180px,.8fr) minmax(280px,1.3fr);}
+.project-overview-table .stage-nodes {display:none;}
+.project-overview-table .overview-row-situation {font-size:12px;color:var(--app-text-muted);}
